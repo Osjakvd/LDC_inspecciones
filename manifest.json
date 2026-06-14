@@ -1,0 +1,17 @@
+{
+  "name": "DC-97 Evaluación de Instalaciones",
+  "short_name": "DC-97",
+  "description": "Captura de datos para el formulario DC-97-S de evaluación de instalaciones",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1923",
+  "theme_color": "#1a2d42",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%231a2d42'/><text x='96' y='130' font-size='100' text-anchor='middle' fill='%2364b5f6'>97</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}

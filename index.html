@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f1923">
+<title>DC-97 Evaluación</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg0:#0f1923;--bg1:#162230;--bg2:#1e3044;--bg3:#243a52;
+  --accent:#3b82f6;--accent2:#1d6ef5;
+  --success:#22c55e;--warn:#f59e0b;--danger:#ef4444;
+  --txt0:#f0f4f8;--txt1:#b8c8d8;--txt2:#7a96b0;--txt3:#4a6880;
+  --border:#2a3f58;--border2:#1e3044;
+  --radius:12px;--radius-sm:8px;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg0);color:var(--txt0);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:16px;-webkit-font-smoothing:antialiased}
+#app{display:flex;flex-direction:column;height:100dvh;height:100vh;overflow:hidden}
+
+/* ── HOME ── */
+#screen-home{display:flex;flex-direction:column;height:100%;background:var(--bg0);overflow-y:auto;padding-bottom:40px}
+.home-hero{background:linear-gradient(160deg,#0a1929 0%,#162a45 60%,#0f2035 100%);padding:48px 24px 36px;text-align:center;position:relative;border-bottom:1px solid var(--border);flex-shrink:0}
+.home-hero-logo{width:64px;height:64px;background:var(--accent2);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 32px rgba(29,110,245,.35)}
+.home-hero-logo svg{width:36px;height:36px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.home-hero h1{font-size:22px;font-weight:700;color:var(--txt0);margin-bottom:4px;letter-spacing:-.02em}
+.home-hero p{font-size:13px;color:var(--txt2);line-height:1.5}
+.home-hero-version{position:absolute;top:16px;right:16px;font-size:10px;font-weight:600;color:var(--txt3);background:var(--bg2);padding:3px 8px;border-radius:20px;border:1px solid var(--border);letter-spacing:.05em}
+.home-body{padding:24px 16px 0;flex:1}
+.home-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txt2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.home-section-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.btn-new{width:100%;display:flex;align-items:center;gap:14px;background:var(--accent2);border:none;border-radius:var(--radius);padding:16px 20px;cursor:pointer;text-align:left;box-shadow:0 4px 20px rgba(29,110,245,.3);transition:all .15s;margin-bottom:20px}
+.btn-new:active{background:#1557c4;transform:scale(.98)}
+.btn-new-icon{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.btn-new-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-new-text{flex:1}
+.btn-new-text strong{display:block;font-size:15px;font-weight:600;color:#fff}
+.btn-new-text span{display:block;font-size:12px;color:rgba(255,255,255,.7);margin-top:2px}
+.btn-new-arrow{width:20px;height:20px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.eval-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .15s;display:flex;align-items:stretch}
+.eval-card:active{border-color:var(--accent);background:var(--bg2)}
+.eval-card-accent{width:4px;flex-shrink:0;background:var(--accent2)}
+.eval-card-body{flex:1;padding:14px 14px 14px 12px;min-width:0}
+.eval-card-title{font-size:14px;font-weight:600;color:var(--txt0);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eval-card-sub{font-size:12px;color:var(--txt2);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.eval-card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.eval-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:var(--bg2);color:var(--txt2);border:1px solid var(--border)}
+.eval-pill.green{background:#0a2e1a;color:#4ade80;border-color:#166534}
+.eval-pill.blue{background:#0a1f40;color:#60a5fa;border-color:#1d4ed8}
+.eval-card-actions{display:flex;flex-direction:column;justify-content:center;padding:0 12px 0 0;gap:6px;flex-shrink:0}
+.eval-action-btn{background:var(--bg2);border:1px solid var(--border);border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.eval-action-btn:active{background:var(--bg3)}
+.eval-action-btn svg{width:15px;height:15px;stroke:var(--txt2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.eval-action-btn.del svg{stroke:#ef4444}
+.eval-empty{text-align:center;padding:32px 20px;color:var(--txt2)}
+.eval-empty svg{width:40px;height:40px;stroke:var(--txt3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin:0 auto 10px;display:block}
+.eval-empty p{font-size:13px;line-height:1.5}
+.btn-import{width:100%;display:flex;align-items:center;gap:12px;background:none;border:1.5px dashed var(--border);border-radius:var(--radius);padding:14px 16px;cursor:pointer;text-align:left;color:var(--txt2);transition:all .15s;margin-top:12px}
+.btn-import:active{border-color:var(--accent);color:var(--accent)}
+.btn-import svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn-import span{font-size:13px}
+.progress-bar{height:3px;background:var(--bg3);border-radius:4px;overflow:hidden;margin:6px 0 2px}
+.progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s ease}
+
+/* ── MAIN APP ── */
+#screen-main{display:none;flex-direction:column;height:100%}
+#topbar{flex-shrink:0;background:var(--bg1);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;gap:10px;height:56px;z-index:100}
+.topbar-back{background:none;border:none;color:var(--txt2);cursor:pointer;padding:4px;display:flex;align-items:center;border-radius:8px;flex-shrink:0}
+.topbar-back:active{background:var(--bg2)}
+.topbar-back svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#topbar-title{font-size:14px;font-weight:600;color:var(--txt0);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#topbar-badge{background:var(--accent2);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+#nav{flex-shrink:0;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;padding:0 4px}
+.nav-btn{flex:1;background:none;border:none;color:var(--txt2);font-size:11px;font-weight:500;padding:10px 4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-bottom:2px solid transparent}
+.nav-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+#content{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.section{display:none;padding:16px;padding-bottom:80px;animation:fadeIn .15s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* Forms */
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.card-body{padding:0 16px 16px;display:none}
+.card-body.open{display:block}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.field label .req{color:var(--accent);margin-left:2px}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--txt0);font-size:15px;padding:10px 12px;-webkit-appearance:none;appearance:none;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a96b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:36px}
+textarea{resize:vertical;min-height:72px;line-height:1.5}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txt2);margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.section-title:first-child{margin-top:0}
+.stats-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat-box{background:var(--bg1);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 10px;text-align:center}
+.stat-box .val{font-size:22px;font-weight:700;color:var(--accent);line-height:1}
+.stat-box .lbl{font-size:10px;font-weight:500;color:var(--txt2);text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+.cat-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:20px}
+.cat-sitio{background:#0e4d3a;color:#4ade80}
+.cat-edificio{background:#1a3a6b;color:#93c5fd}
+.cat-pisos{background:#4a1d62;color:#c084fc}
+
+/* Evaluation list */
+.filter-row{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{flex-shrink:0;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--txt1);cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap}
+.filter-chip.active{background:var(--accent2);border-color:var(--accent2);color:#fff}
+.bldg-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none}
+.bldg-tabs::-webkit-scrollbar{display:none}
+.bldg-tab{flex-shrink:0;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:500;color:var(--txt1);cursor:pointer;transition:all .15s;white-space:nowrap}
+.bldg-tab.active{background:var(--accent2);border-color:var(--accent2);color:#fff}
+
+/* Element items */
+.elem-item{background:var(--bg1);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;transition:opacity .2s}
+.elem-item.hidden-elem{opacity:.4}
+.elem-header{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.elem-header:active{background:var(--bg2)}
+.elem-num{font-size:11px;font-weight:700;color:var(--txt2);min-width:22px}
+.elem-name{flex:1;font-size:14px;font-weight:500;color:var(--txt0);line-height:1.3}
+.elem-status{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.comp-count{font-size:11px;color:var(--txt2)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0}
+.status-dot.filled{background:var(--success)}
+.status-dot.hidden-dot{background:#4a3020}
+.elem-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border2)}
+.elem-body.open{display:block}
+
+/* Element action bar */
+.elem-actions{display:flex;gap:6px;margin:12px 0 4px;flex-wrap:wrap}
+.elem-action-btn{display:inline-flex;align-items:center;gap:5px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--txt1);cursor:pointer;transition:all .15s;white-space:nowrap}
+.elem-action-btn:active{background:var(--bg3)}
+.elem-action-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.elem-action-btn.hide-btn{color:#f59e0b;border-color:#78350f}
+.elem-action-btn.hide-btn.active{background:#2a1e00;color:#fbbf24;border-color:#f59e0b}
+.elem-action-btn.new-comp-btn{color:#a78bfa;border-color:#4c1d95}
+
+/* Component blocks */
+.comp-selector{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin:8px 0 0;overflow:hidden}
+
+/* Each instance of a component (can repeat) */
+.comp-instance{border-bottom:1px solid var(--border2)}
+.comp-instance:last-child{border-bottom:none}
+.comp-option{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;transition:background .1s}
+.comp-option:active{background:var(--bg3)}
+.comp-option input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.comp-option-label{font-size:13px;color:var(--txt1);line-height:1.3;flex:1}
+.comp-unit-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--bg3);color:var(--txt2);flex-shrink:0}
+.comp-instance-label{font-size:10px;font-weight:700;color:var(--txt3);padding:2px 6px;background:var(--bg3);border-radius:4px;flex-shrink:0}
+.comp-del-btn{width:26px;height:26px;background:none;border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.comp-del-btn:active{background:#2a0a0a;border-color:var(--danger)}
+.comp-del-btn svg{width:13px;height:13px;stroke:var(--txt3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.comp-del-btn:active svg{stroke:var(--danger)}
+
+.comp-fields{background:var(--bg0);border-top:1px solid var(--border2);padding:12px;display:none;animation:fadeIn .1s ease}
+.comp-fields.open{display:block}
+.comp-fields .field{margin-bottom:10px}
+.comp-fields .field:last-child{margin-bottom:0}
+.comp-fields label{font-size:11px}
+.comp-fields input,.comp-fields select,.comp-fields textarea{font-size:14px;padding:8px 10px}
+.cond-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px}
+.cond-btn{background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .15s;user-select:none}
+.cond-btn span{display:block;font-size:14px;font-weight:700;color:var(--txt1)}
+.cond-btn small{display:block;font-size:9px;color:var(--txt2);margin-top:2px;line-height:1.2}
+.cond-btn.sel-1{border-color:var(--success);background:#0a2e1a}.cond-btn.sel-1 span{color:var(--success)}
+.cond-btn.sel-2{border-color:var(--accent);background:#0a1f40}.cond-btn.sel-2 span{color:#60a5fa}
+.cond-btn.sel-3{border-color:var(--warn);background:#2a1e00}.cond-btn.sel-3 span{color:var(--warn)}
+.cond-btn.sel-4{border-color:var(--danger);background:#2a0a0a}.cond-btn.sel-4 span{color:var(--danger)}
+
+/* Add-component sheet */
+.add-comp-sheet{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:8px;overflow:hidden;display:none}
+.add-comp-sheet.open{display:block}
+.add-comp-header{padding:10px 14px;font-size:12px;font-weight:600;color:var(--txt2);background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.add-comp-body{padding:12px}
+.add-comp-close{background:none;border:none;color:var(--txt2);cursor:pointer;font-size:20px;line-height:1;padding:0 4px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;width:100%;justify-content:center;margin-bottom:8px}
+.btn-primary{background:var(--accent2);color:#fff}
+.btn-primary:active{background:#1557c4}
+.btn-secondary{background:var(--bg2);color:var(--txt0);border:1px solid var(--border)}
+.btn-secondary:active{background:var(--bg3)}
+.btn-danger{background:#7f1d1d;color:#fca5a5;border:1px solid var(--danger)}
+.btn-danger:active{background:#991b1b}
+.btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.export-card{background:linear-gradient(135deg,#0e2a4a,#162230);border:1px solid #2a4a6e;border-radius:var(--radius);padding:20px;margin-bottom:16px;text-align:center}
+.export-card h3{font-size:16px;font-weight:600;color:var(--txt0);margin-bottom:6px}
+.export-card p{font-size:13px;color:var(--txt1);margin-bottom:16px;line-height:1.5}
+
+/* Toast */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg0);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;font-size:13px;color:var(--txt0);white-space:nowrap;opacity:0;pointer-events:none;transition:all .25s;z-index:999;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.success{border-color:var(--success);color:var(--success)}
+#toast.error{border-color:var(--danger);color:var(--danger)}
+
+/* Modal */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:flex-end;justify-content:center;z-index:500;padding:0 0 env(safe-area-inset-bottom)}
+#modal-overlay.show{display:flex}
+.modal-sheet{background:var(--bg1);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;border-top:1px solid var(--border)}
+.modal-sheet h3{font-size:16px;font-weight:600;color:var(--txt0);margin-bottom:6px;text-align:center}
+.modal-sheet p{font-size:13px;color:var(--txt1);text-align:center;margin-bottom:20px;line-height:1.5}
+.modal-btns{display:flex;flex-direction:column;gap:8px}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══ PANTALLA INICIO ══ -->
+<div id="screen-home">
+  <div class="home-hero">
+    <span class="home-hero-version">DC-97-S</span>
+    <div class="home-hero-logo">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+    </div>
+    <h1>Evaluación de Instalaciones</h1>
+    <p>Captura de datos para el formulario DC-97-S</p>
+  </div>
+  <div class="home-body">
+    <div class="home-section-title" style="margin-top:0">Nueva evaluación</div>
+    <button class="btn-new" onclick="newEval()">
+      <div class="btn-new-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+      <div class="btn-new-text"><strong>Nueva inspección</strong><span>Iniciar evaluación desde cero</span></div>
+      <svg class="btn-new-arrow" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="home-section-title">Evaluaciones guardadas</div>
+    <div id="eval-list"></div>
+    <button class="btn-import" onclick="document.getElementById('import-file').click()">
+      <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+      <span>Importar JSON externo</span>
+    </button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+  </div>
+</div>
+
+<!-- ══ PANTALLA PRINCIPAL ══ -->
+<div id="screen-main">
+  <div id="topbar">
+    <button class="topbar-back" onclick="goHome()">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <span id="topbar-title">DC-97 Evaluación</span>
+    <span id="topbar-badge">Nuevo</span>
+  </div>
+  <div id="nav">
+    <button class="nav-btn active" data-tab="sitio" onclick="showTab('sitio')">
+      <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Sitio
+    </button>
+    <button class="nav-btn" data-tab="edificios" onclick="showTab('edificios')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M8 4V2M16 4V2M3 10h18"/></svg>
+      Edificios
+    </button>
+    <button class="nav-btn" data-tab="evaluacion" onclick="showTab('evaluacion')">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 12l2 2 4-4"/></svg>
+      Evaluación
+    </button>
+    <button class="nav-btn" data-tab="exportar" onclick="showTab('exportar')">
+      <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+      Exportar
+    </button>
+  </div>
+  <div id="content">
+
+    <!-- TAB SITIO -->
+    <div class="section active" id="tab-sitio">
+      <div class="section-title">Información general</div>
+      <div class="card"><div class="card-body open">
+        <div class="field"><label>Descripción breve</label>
+          <textarea id="h-desc" rows="2" placeholder="Breve descripción de esta evaluación" oninput="saveHeader()"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Fecha de evaluación <span class="req">*</span></label>
+            <input type="date" id="h-fecha" oninput="saveHeader()">
+          </div>
+          <div class="field"><label>Año en curso</label>
+            <input type="number" id="h-anio" placeholder="2025" min="2000" max="2099" oninput="saveHeader()">
+          </div>
+        </div>
+        <div class="field"><label>Dirección del sitio</label>
+          <input type="text" id="h-dir" placeholder="Calle, número, ciudad, estado" oninput="saveHeader()">
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Clima <span class="req">*</span></label>
+            <select id="h-clima" onchange="saveHeader()"><option value="">— Seleccione —</option></select>
+          </div>
+          <div class="field"><label>Unidad de medida</label>
+            <select id="h-unidad" onchange="saveHeader()"><option value="">— Seleccione —</option><option>Imperial</option><option>Métrico</option></select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Uso principal <span class="req">*</span></label>
+            <select id="h-uso" onchange="saveHeader()"><option value="">— Seleccione —</option></select>
+          </div>
+          <div class="field"><label>Oficina</label>
+            <select id="h-oficina" onchange="saveHeader()"><option value="">— Seleccione —</option><option>RDC</option><option>LDC</option></select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>No. de congregaciones</label>
+            <input type="number" id="h-cong" placeholder="1" min="1" oninput="saveHeader()">
+          </div>
+          <div class="field"><label>No. de auditorios</label>
+            <input type="number" id="h-audit" placeholder="1" min="1" oninput="saveHeader()">
+          </div>
+        </div>
+        <div class="field"><label>No. de edificios en el sitio <span class="req">*</span></label>
+          <select id="h-numEdif" onchange="saveHeaderBldgs()"><option value="">— Seleccione —</option></select>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Latitud</label>
+            <input type="number" id="h-lat" step="any" placeholder="—" oninput="saveHeader()">
+          </div>
+          <div class="field"><label>Longitud</label>
+            <input type="number" id="h-lng" step="any" placeholder="—" oninput="saveHeader()">
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" id="btn-gps" onclick="obtenerUbicacion()" style="width:100%;margin-top:4px">
+          <span id="gps-icon">📍</span> <span id="gps-label">Obtener ubicación actual</span>
+        </button>
+      </div></div>
+      <div class="section-title">Progreso</div>
+      <div class="stats-strip">
+        <div class="stat-box"><div class="val" id="stat-comp">0</div><div class="lbl">Componentes</div></div>
+        <div class="stat-box"><div class="val" id="stat-edif">0</div><div class="lbl">Edificios</div></div>
+        <div class="stat-box"><div class="val" id="stat-hidden">0</div><div class="lbl">Ocultados</div></div>
+      </div>
+    </div>
+
+    <!-- TAB EDIFICIOS -->
+    <div class="section" id="tab-edificios">
+      <div class="section-title">Datos por edificio</div>
+      <div id="edificios-container">
+        <div style="text-align:center;padding:40px 20px;color:var(--txt2)">Selecciona el número de edificios en la pestaña Sitio</div>
+      </div>
+    </div>
+
+    <!-- TAB EVALUACIÓN -->
+    <div class="section" id="tab-evaluacion">
+      <div class="filter-row">
+        <button class="filter-chip active" data-cat="todos" onclick="filterCat('todos')">Todos</button>
+        <button class="filter-chip" data-cat="Sitio" onclick="filterCat('Sitio')"><span class="cat-tag cat-sitio" style="margin-right:4px">S</span>Sitio</button>
+        <button class="filter-chip" data-cat="Edificio" onclick="filterCat('Edificio')"><span class="cat-tag cat-edificio" style="margin-right:4px">E</span>Edificio</button>
+        <button class="filter-chip" data-cat="Pisos" onclick="filterCat('Pisos')"><span class="cat-tag cat-pisos" style="margin-right:4px">P</span>Pisos</button>
+        <button class="filter-chip" id="chip-show-hidden" data-cat="__hidden" onclick="toggleShowHidden()">
+          <svg style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          Ocultos
+        </button>
+      </div>
+      <div id="eval-building-selector" style="display:none;margin-bottom:12px">
+        <div class="field" style="margin-bottom:0"><label>Edificio activo</label>
+          <div class="bldg-tabs" id="eval-bldg-tabs"></div>
+        </div>
+      </div>
+      <div id="elem-list"></div>
+    </div>
+
+    <!-- TAB EXPORTAR -->
+    <div class="section" id="tab-exportar">
+      <div class="export-card">
+        <h3>Exportar datos</h3>
+        <p>Descarga el JSON para vaciarlo al DC-97-S.xlsm con el script Python, o compártelo por correo.</p>
+        <button class="btn btn-primary" onclick="exportJSON()">
+          <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Descargar evaluacion.json
+        </button>
+        <button class="btn btn-secondary" onclick="exportCSVSummary()">
+          <svg viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6M5 20h14a2 2 0 002-2V7l-5-5H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          Resumen CSV
+        </button>
+      </div>
+      <div class="section-title">Resumen de captura</div>
+      <div id="export-summary"></div>
+      <div class="section-title">Esta evaluación</div>
+      <div class="card"><div class="card-body open">
+        <p style="font-size:13px;color:var(--txt1);margin-bottom:12px">Los cambios se guardan automáticamente.</p>
+        <button class="btn btn-secondary" onclick="duplicateEval()">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Duplicar esta evaluación
+        </button>
+        <button class="btn btn-danger" onclick="showDeleteModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          Eliminar esta evaluación
+        </button>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="modal-overlay" onclick="if(event.target===this)hideModal()">
+  <div class="modal-sheet">
+    <h3 id="modal-title">Confirmar</h3>
+    <p id="modal-body"></p>
+    <div class="modal-btns">
+      <button class="btn btn-danger" id="modal-confirm-btn">Confirmar</button>
+      <button class="btn btn-secondary" onclick="hideModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const CATALOG = {"primary_uses": ["Salón de Asambleas", "Sucursal", "Bodega de Construcción", "Bodega de Asambleas", "Salón del Reino", "Salón del Reino (Sencillo)", "Oficina Remota del LDC", "Depósito de Literatura", "Oficina Remota de Traducción", "Residencia", "Centro Educativo", "Bodega"], "climates": ["Tropical", "Seco", "Templado", "Frío", "Costero"], "offices": ["RDC", "LDC"], "conditions": [{"num": 1, "desc": "Buena"}, {"num": 2, "desc": "Aceptable"}, {"num": 3, "desc": "Defectuosa"}, {"num": 4, "desc": "Seriamente Defectuosa"}], "elements": [{"cat": "Sitio", "num": 1, "name": "Muros Perimetrales", "cod": "G2060", "components": [{"comp": "Muros Exteriores (Mampostería, Albañilería)", "unit": "L"}, {"comp": "Poste y Panel de Concreto Reforzado", "unit": "L"}]}, {"cat": "Sitio", "num": 2, "name": "Cerco Perimetral", "cod": "G2060", "components": [{"comp": "Cerco de Madera (Madera Dura de preferencia)", "unit": "L"}, {"comp": "Cerco Vinílico", "unit": "L"}, {"comp": "Hierro Forjado", "unit": "L"}, {"comp": "Madera Comprimida y Tratada", "unit": "L"}, {"comp": "Malla Ciclónica (Galvanizado)", "unit": "L"}]}, {"cat": "Sitio", "num": 3, "name": "Calles/Estacionamientos y Veredas", "cod": "G2020", "components": [{"comp": "Bloques de Adoquín", "unit": "A"}, {"comp": "Calles/Estacionamientos de Concreto", "unit": "A"}, {"comp": "Calzada de Asfalto [30-40mm de espesor]", "unit": "A"}, {"comp": "Andadores de Concreto", "unit": "A"}, {"comp": "Patios de Concreto y Ladrillo", "unit": "A"}]}, {"cat": "Sitio", "num": 4, "name": "Paisajismo", "cod": "G2080", "components": [{"comp": "Paisajismo", "unit": "A"}]}, {"cat": "Sitio", "num": 5, "name": "Alumbrado de Sitio (Externo)", "cod": "G4050", "components": [{"comp": "Estacionamiento (Independiente)", "unit": "N"}, {"comp": "Iluminación Exterior", "unit": "N"}, {"comp": "Luz Empotrada Bajo Techo", "unit": "N"}, {"comp": "Montada en la Pared", "unit": "N"}, {"comp": "Señalización y sobre Paisajismo", "unit": "N"}]}, {"cat": "Sitio", "num": 18, "name": "Obras Civiles - Servicio de Agua", "cod": "G3010", "components": [{"comp": "Bomba de Pozo", "unit": "N"}, {"comp": "Cobre", "unit": "N"}, {"comp": "Galvanizada", "unit": "N"}, {"comp": "PVC", "unit": "N"}]}, {"cat": "Sitio", "num": 19, "name": "Obras Civiles - Servicio de Gas", "cod": "G3060", "components": [{"comp": "Líneas de Gas (acero negro y flexibles)", "unit": "N"}, {"comp": "Líneas de Gas (flexibles)", "unit": "N"}]}, {"cat": "Sitio", "num": 20, "name": "Obras Civiles - Servicio Eléctrico", "cod": "G4010", "components": [{"comp": "Aluminio", "unit": "N"}, {"comp": "Cobre", "unit": "N"}]}, {"cat": "Sitio", "num": 21, "name": "Obras Civiles - Servicio de Datos", "cod": "G5010", "components": [{"comp": "Cobre", "unit": "N"}, {"comp": "Fibra", "unit": "N"}]}, {"cat": "Sitio", "num": 22, "name": "Obras Civiles - Servicio Telefónico", "cod": "G5010", "components": [{"comp": "Cobre", "unit": "N"}, {"comp": "Fibra", "unit": "N"}]}, {"cat": "Sitio", "num": 27, "name": "Obras Civiles - Sistema Sanitario de Aguas Residuales", "cod": "G3020", "components": [{"comp": "Concreto/Hormigón", "unit": "N"}, {"comp": "Hierro Fundido", "unit": "N"}, {"comp": "PVC", "unit": "N"}, {"comp": "Tanque Séptico (concreto)", "unit": "N"}, {"comp": "Tanque Séptico (metal)", "unit": "N"}]}, {"cat": "Sitio", "num": 61, "name": "Sistema de Riego", "cod": "G2081", "components": [{"comp": "Sistema de Riego por Goteo", "unit": "N"}, {"comp": "Sistema de Rociadores", "unit": "N"}]}, {"cat": "Sitio", "num": 63, "name": "Obras Civiles - Sistema de Drenaje para Tormentas", "cod": "G3030", "components": [{"comp": "Arcilla Vitrificada", "unit": "N"}, {"comp": "Concreto/Hormigón", "unit": "N"}, {"comp": "Metal Corrugado", "unit": "N"}, {"comp": "Polietileno de Alta Densidad (HDPE) Corrugado", "unit": "N"}, {"comp": "PVC", "unit": "N"}]}, {"cat": "Edificio", "num": 6, "name": "Cimentación/Fundaciones", "cod": "A1010", "components": [{"comp": "Bloque de Concreto", "unit": "A"}, {"comp": "Cimiento de Madera [debajo del grado ext]", "unit": "A"}, {"comp": "Cimiento de Madera Permanente (PWF; tratada)", "unit": "A"}, {"comp": "Moldes de Concreto Aislado (ICFs)", "unit": "A"}, {"comp": "Zapatas y Postes", "unit": "A"}, {"comp": "Losa a Nivel de Suelo (concreto)", "unit": "A"}, {"comp": "Poste y Placa Tensada a Nivel de Suelo", "unit": "A"}, {"comp": "Vaciado de Concreto incluyendo Zapatas", "unit": "A"}]}, {"cat": "Edificio", "num": 7, "name": "Armazón Estructural", "cod": "B1011", "components": [{"comp": "Acero", "unit": "A"}, {"comp": "Columnas de Acero y Placas Galvanizadas", "unit": "A"}, {"comp": "Conectores Estructurales para Construcción de Madera", "unit": "A"}, {"comp": "Estructura de Madera", "unit": "A"}, {"comp": "Ladrillo", "unit": "A"}, {"comp": "Moldes de Concreto Aislado (ICFs)", "unit": "A"}, {"comp": "Paneles Estructurales Insulados (SIPs)", "unit": "A"}, {"comp": "Sistema de Concreto Premezclado", "unit": "A"}, {"comp": "Sistemas de Vaciado de Concreto", "unit": "A"}, {"comp": "Unidades de Albañilería de Concreto (CMUs)", "unit": "A"}, {"comp": "Vigas de Acero", "unit": "A"}]}, {"cat": "Edificio", "num": 8, "name": "Construcción de Muros Exteriores, Formica, Acabados", "cod": "B2010", "components": [{"comp": "Albañilería, Mampostería (relleno de juntas con Mortero)", "unit": "A"}, {"comp": "Bloque y Albañilería (Mampostería)", "unit": "A"}, {"comp": "Cemento y Fibrocemento", "unit": "A"}, {"comp": "Chapa o Recubrimiento (albañilería delgada)", "unit": "A"}, {"comp": "Estuco/EIFS", "unit": "A"}, {"comp": "Fibra de Vidrio Mat Revestimiento DensGlass", "unit": "A"}, {"comp": "Madera (rastreles y molduras)", "unit": "A"}, {"comp": "Madera Prefabricada", "unit": "A"}, {"comp": "Moldes de Concreto Aislado (bloque híbrido)", "unit": "A"}, {"comp": "Piedra Artificial (falsa)", "unit": "A"}, {"comp": "Piedra y Piedra Fabricada", "unit": "A"}, {"comp": "Revestimiento de Aluminio", "unit": "A"}, {"comp": "Revestimiento de Madera", "unit": "A"}, {"comp": "Revestimiento de Vinilo", "unit": "A"}, {"comp": "Sellador de Albañilería/Mampostería", "unit": "A"}, {"comp": "Sistema de Concreto Vaciado", "unit": "A"}, {"comp": "Sofito", "unit": "A"}, {"comp": "Unidades de Albañilería (Mampostería) de Concreto (CMUs) [Relleno de Núcleo]", "unit": "A"}, {"comp": "Pintura (exterior)", "unit": "A"}]}, {"cat": "Edificio", "num": 9, "name": "Estructura e Impermeabilización de Muros Bajo Tierra (Sótanos)", "cod": "A2010", "components": [{"comp": "Estructura de Muros Subrasante", "unit": "A"}, {"comp": "Barrera de Vapor", "unit": "A"}, {"comp": "Capa Inferior Sintética", "unit": "A"}, {"comp": "DPC DPM (polietileno)", "unit": "A"}, {"comp": "Impermeabilización - Otros", "unit": "A"}, {"comp": "Impermeabilización con Revestimiento Bituminoso", "unit": "A"}, {"comp": "Membrana de Aplicación Líquida", "unit": "A"}, {"comp": "Alberca de Bautismo", "unit": "N"}, {"comp": "Piscina", "unit": "N"}, {"comp": "Piscina Terapéutica", "unit": "N"}, {"comp": "Sistema de Fontanería de Piscina", "unit": "N"}]}, {"cat": "Edificio", "num": 10, "name": "Construcción de Techo Inclinado", "cod": "B1020", "components": [{"comp": "Cerchas [sólo si son TRATADAS]", "unit": "A"}, {"comp": "Estructura de Techo Inclinado (madera y acero)", "unit": "A"}, {"comp": "Estructura de Techo Inclinado (vigas de madera)", "unit": "A"}]}, {"cat": "Edificio", "num": 11, "name": "Recubrimiento de Techo Inclinado", "cod": "B3010", "components": [{"comp": "Asfalto (arquitectónico)", "unit": "A"}, {"comp": "BUR (techado de capas y plano)", "unit": "A"}, {"comp": "Fibrocemento", "unit": "A"}, {"comp": "Hojas de Aluminio", "unit": "A"}, {"comp": "Madera (teja)", "unit": "A"}, {"comp": "Pintura para recubrimiento (Aplicado en el campo)", "unit": "A"}, {"comp": "Pintura para recubrimiento (Aplicado en Fábrica)", "unit": "A"}, {"comp": "Pizarra (piedra negra)", "unit": "A"}, {"comp": "Pizarra Simulada (artificial)", "unit": "A"}, {"comp": "Techo de Metal", "unit": "A"}, {"comp": "Tejas de Arcilla/Concreto", "unit": "A"}, {"comp": "Tejas de Asfalto (3-tab)", "unit": "A"}]}, {"cat": "Edificio", "num": 12, "name": "Construcción de Techo Plano", "cod": "B1020", "components": [{"comp": "Concreto/Hormigón", "unit": "A"}, {"comp": "Estructura de Techo Plano (cerchas de madera)", "unit": "A"}, {"comp": "Estructura de Techo Plano (cerchas de metal)", "unit": "A"}]}, {"cat": "Edificio", "num": 13, "name": "Recubrimiento de Techo Plano", "cod": "B3010", "components": [{"comp": "Carbón y Alquitrán", "unit": "A"}, {"comp": "Caucho EPDM (monómero de etileno propileno dieno)", "unit": "A"}, {"comp": "Láminas de Zinc", "unit": "A"}, {"comp": "Membrana de PVC", "unit": "A"}, {"comp": "Metal (plástico/recubrimiento de polvo, galvanizado)", "unit": "A"}, {"comp": "Metal (sin recubrimiento, NO galvanizado)", "unit": "A"}, {"comp": "Recubrimiento de Aluminio", "unit": "A"}, {"comp": "Rociado de Espuma de Uretano", "unit": "A"}, {"comp": "TPO o PVC", "unit": "A"}, {"comp": "Verde (cubierto de vegetación-ecológico)", "unit": "A"}]}, {"cat": "Edificio", "num": 14, "name": "Borde/Drenaje de Techo", "cod": "B3010", "components": [{"comp": "Canalones y Bajantes de Acero Galvanizados", "unit": "L"}, {"comp": "Canalones y Bajantes de Aluminio", "unit": "L"}, {"comp": "Canalones y Bajantes de Vinilo", "unit": "L"}, {"comp": "Fascia de Aluminio", "unit": "L"}, {"comp": "Fascia de Madera", "unit": "L"}, {"comp": "Fascia de Vinilo", "unit": "L"}]}, {"cat": "Edificio", "num": 15, "name": "Ventanas Exteriores", "cod": "B2020", "components": [{"comp": "Aluminio (con cobertura contra polvo)", "unit": "N"}, {"comp": "Aluminio [anodizado]", "unit": "N"}, {"comp": "Madera Blanda", "unit": "N"}, {"comp": "Madera Dura", "unit": "N"}, {"comp": "Madera/Persianas Exteriores", "unit": "N"}, {"comp": "Recubrimiento de Aluminio (núcleo de madera)", "unit": "N"}, {"comp": "Tragaluces/Lucernario", "unit": "N"}, {"comp": "Ventana con Persianas (aluminio)", "unit": "N"}, {"comp": "Ventanas de Vinilo/Fibra de Vidrio", "unit": "N"}]}, {"cat": "Edificio", "num": 16, "name": "Puertas Exteriores", "cod": "B2050", "components": [{"comp": "Acero No Resistente al Fuego (exterior)", "unit": "N"}, {"comp": "Acero Resistente al Fuego (exterior)", "unit": "N"}, {"comp": "Cortina Enrollable (acero)", "unit": "N"}, {"comp": "Madera (exterior)", "unit": "N"}, {"comp": "Puerta Corrediza de Cristal/Patio (exterior)", "unit": "N"}, {"comp": "Puerta de Cristal", "unit": "N"}, {"comp": "Vinilo (exterior)", "unit": "N"}]}, {"cat": "Edificio", "num": 17, "name": "Sistema de Alarma de Seguridad", "cod": "D7010", "components": [{"comp": "Sistema de Seguridad", "unit": "N"}]}, {"cat": "Edificio", "num": 23, "name": "Sistema de Distribución Eléctrica", "cod": "D5020", "components": [{"comp": "Aluminio Desnudo", "unit": "N"}, {"comp": "Aluminio Revestido de Cobre", "unit": "N"}, {"comp": "Cobre Aislado", "unit": "N"}, {"comp": "Cobre Desnudo", "unit": "N"}, {"comp": "Conexiones Chapeadas de Cobre", "unit": "N"}, {"comp": "Tablero", "unit": "N"}]}, {"cat": "Edificio", "num": 24, "name": "Sistema de Generación de Electricidad", "cod": "D5010", "components": [{"comp": "Fotovoltaica (panel solar)", "unit": "N"}, {"comp": "Generador (fuente principal)", "unit": "N"}, {"comp": "Generador (modo de hibernación <300 horas/año)", "unit": "N"}, {"comp": "Transformadores (Distribución de Energía)", "unit": "N"}]}, {"cat": "Edificio", "num": 25, "name": "Sistema de Agua", "cod": "D2010", "components": [{"comp": "Línea de Agua (cobre)", "unit": "N"}, {"comp": "Línea de Agua (galvanizada)", "unit": "N"}, {"comp": "Línea de Agua (PEX)", "unit": "N"}, {"comp": "Línea de Agua (plástica)", "unit": "N"}, {"comp": "Suavizador de Agua", "unit": "N"}]}, {"cat": "Edificio", "num": 26, "name": "Sistema de Drenaje Sanitario", "cod": "D2020", "components": [{"comp": "Bomba Trituradora para Drenaje con Macerador", "unit": "N"}, {"comp": "Tubería de Hierro Fundido (bajo tierra)", "unit": "N"}, {"comp": "Tubería de Hierro Fundido (sobre el suelo)", "unit": "N"}, {"comp": "Tubería de Residuos ABS/PVC", "unit": "N"}, {"comp": "Tubería de Residuos de Concreto", "unit": "N"}]}, {"cat": "Edificio", "num": 28, "name": "Sistema de Generación de Calefacción", "cod": "D3020", "components": [{"comp": "Caldera", "unit": "N"}, {"comp": "Calefactor Radiante Eléctrico", "unit": "N"}, {"comp": "Calentador", "unit": "N"}]}, {"cat": "Edificio", "num": 29, "name": "Sistema de Distribución HVAC", "cod": "D3050", "components": [{"comp": "Ductos", "unit": "N"}, {"comp": "Línea de Agua (cobre)", "unit": "N"}]}, {"cat": "Edificio", "num": 30, "name": "Equipo HVAC", "cod": "D3030", "components": [{"comp": "Aire Acondicionado (central) [Unidad Empaquetada]", "unit": "N"}, {"comp": "Bomba de Calor", "unit": "N"}, {"comp": "Enfriador Refrigerado por Agua", "unit": "N"}, {"comp": "Enfriador Refrigerado por Aire", "unit": "N"}, {"comp": "Panel de Control de HVAC", "unit": "N"}, {"comp": "Serpentín Condensador (sección exterior de unidad de ac)", "unit": "N"}, {"comp": "Serpentín Evaporador (sección interior de unidad de ac)", "unit": "N"}, {"comp": "Torre de Enfriamiento", "unit": "N"}, {"comp": "Manejadora de Aire", "unit": "N"}, {"comp": "Unidad de Ventiloconvector", "unit": "N"}, {"comp": "Unidad de Recuperación de Energía", "unit": "N"}]}, {"cat": "Edificio", "num": 31, "name": "Extracción/Ventilación", "cod": "D3060", "components": [{"comp": "Extractores de Aire (comercial)", "unit": "N"}, {"comp": "Extractores de Aire (para residencias/baños)", "unit": "N"}, {"comp": "Ventiladores (Montados en Techo o Pared)", "unit": "N"}, {"comp": "Ventiladores de Suministro de Aire Fresco", "unit": "N"}]}, {"cat": "Edificio", "num": 32, "name": "Unidades de A/C", "cod": "D3030", "components": [{"comp": "Aire Acondicionado (a través de la pared)", "unit": "N"}, {"comp": "Aire Acondicionado (en ventana)", "unit": "N"}, {"comp": "Sistema de Mini-Split", "unit": "N"}]}, {"cat": "Edificio", "num": 33, "name": "Sistema de Controles de Iluminación (en Instalaciones Grandes)", "cod": "D5040", "components": [{"comp": "Sistema Completo", "unit": "N"}]}, {"cat": "Edificio", "num": 35, "name": "Sistema de Telefonía (en Instalaciones Grandes)", "cod": "D6020", "components": [{"comp": "Sistema Completo", "unit": "N"}]}, {"cat": "Edificio", "num": 36, "name": "Sistema de Supresión de Incendios (en Instalaciones Grandes)", "cod": "D4010", "components": [{"comp": "Protección Contra Incendios y Sistemas de Rociadores", "unit": "N"}]}, {"cat": "Edificio", "num": 37, "name": "Sistema de Seguridad (en Instalaciones Grandes)", "cod": "D7010", "components": [{"comp": "Sistema Completo", "unit": "N"}]}, {"cat": "Edificio", "num": 40, "name": "Mitigador de Humedad, Subdrenaje de Edificio", "cod": "A6010", "components": [{"comp": "Drenaje Francés/Tubería Perforada", "unit": "L"}, {"comp": "Relleno Granular", "unit": "L"}, {"comp": "Tablero de Drenaje", "unit": "A"}, {"comp": "Tejido de Filtro", "unit": "L"}]}, {"cat": "Edificio", "num": 49, "name": "Sistema de Detección de Fuego y Alarma", "cod": "D7050", "components": [{"comp": "Sistema de Alarma Contra Incendios", "unit": "N"}, {"comp": "Sistemas de Detectores de Humo/Calor (cableados)", "unit": "N"}]}, {"cat": "Edificio", "num": 56, "name": "Elevadores", "cod": "D1010", "components": [{"comp": "Elevadores", "unit": "N"}]}, {"cat": "Edificio", "num": 58, "name": "Aislación - Techo", "cod": "B3010", "components": [{"comp": "Cartón Espuma", "unit": "A"}, {"comp": "Celulosa", "unit": "A"}, {"comp": "Fibra de Vidrio (expuesta)", "unit": "A"}, {"comp": "Lana de Roca", "unit": "A"}, {"comp": "Membrana Hidrofuga", "unit": "A"}, {"comp": "Papel Negro (papel fieltro)", "unit": "A"}, {"comp": "Relleno Suelto", "unit": "A"}, {"comp": "Rociado de Espuma Icynene (célula abierta)", "unit": "A"}, {"comp": "Rollos de Fibra de Vidrio (empacado)", "unit": "A"}]}, {"cat": "Edificio", "num": 62, "name": "Sistema de Aire Comprimido (Instalación Grande)", "cod": "D2050", "components": [{"comp": "Sistema Completo", "unit": "N"}]}, {"cat": "Edificio", "num": 64, "name": "Sistema de Manejo/Controles de Edificios (Instalación Grande)", "cod": "D8010", "components": [{"comp": "Sistema Completo", "unit": "N"}]}, {"cat": "Pisos", "num": 38, "name": "Construcción de PISO", "cod": "B1012", "components": [{"comp": "Base de Suelo y Contrapiso", "unit": "A"}, {"comp": "Concreto/Hormigón", "unit": "A"}, {"comp": "Madera Blanda", "unit": "A"}, {"comp": "Madera Contrachapada (triplay)", "unit": "A"}, {"comp": "Madera Prensada", "unit": "A"}, {"comp": "Tableros de Fibra Orientada (OSB)", "unit": "A"}, {"comp": "Tableros de Partículas", "unit": "A"}]}, {"cat": "Pisos", "num": 39, "name": "Acabados del PISO", "cod": "C2030", "components": [{"comp": "Hormigón/Concreto", "unit": "A"}, {"comp": "Laminado", "unit": "A"}, {"comp": "Linóleo", "unit": "A"}, {"comp": "Revestimiento Epóxico", "unit": "A"}, {"comp": "Sellador/Barniz/Pintura", "unit": "A"}, {"comp": "Vinilo", "unit": "A"}, {"comp": "Baldosas - Cerámica", "unit": "A"}, {"comp": "Baldosas - Gres", "unit": "A"}, {"comp": "Baldosas - Porcelana", "unit": "A"}, {"comp": "Alfombra", "unit": "A"}, {"comp": "Baldosas de Alfombra (clasificación de contrato)", "unit": "A"}]}, {"cat": "Pisos", "num": 42, "name": "ACABADOS de Muros Interiores", "cod": "C2010", "components": [{"comp": "Paneles de Pared (acabado de fábrica)", "unit": "A"}, {"comp": "Pintura (interior)", "unit": "A"}, {"comp": "Revestimientos de Pared (Vinilo)", "unit": "A"}, {"comp": "Baldosas o Piezas de Cerámica", "unit": "A"}]}, {"cat": "Pisos", "num": 43, "name": "Ventanas/Marcos INTERIORES", "cod": "C1020", "components": [{"comp": "Ventanas Interiores", "unit": "N"}]}, {"cat": "Pisos", "num": 44, "name": "Puertas/Marcos INTERIORES", "cod": "C1030", "components": [{"comp": "Acero Resistente al Fuego (interior)", "unit": "N"}, {"comp": "Armario (puertas de interior plegable y/o corredizas) ", "unit": "N"}, {"comp": "Francesa (interior) ", "unit": "N"}, {"comp": "Madera (núcleo interior hueco)", "unit": "N"}, {"comp": "Madera (núcleo interior sólido)", "unit": "N"}, {"comp": "Metal", "unit": "N"}, {"comp": "Vidrio (marco de aluminio)", "unit": "N"}]}, {"cat": "Pisos", "num": 45, "name": "Asientos de Auditorio", "cod": "E2070", "components": [{"comp": "Bancos", "unit": "N"}, {"comp": "Sillas de Auditorio", "unit": "N"}]}, {"cat": "Pisos", "num": 46, "name": "Estructura, Acabado de Techos", "cod": "C1070", "components": [{"comp": "Baldosas/Plafones Acústicos", "unit": "A"}, {"comp": "Estructura de Cielorraso Suspendido", "unit": "A"}, {"comp": "Hormigón/Concreto", "unit": "A"}, {"comp": "Tablaroca", "unit": "A"}, {"comp": "Pintura (interior)", "unit": "A"}, {"comp": "Tablones de Madera/Paneles", "unit": "A"}, {"comp": "Vinilo/Baldosas de PVC/Paneles", "unit": "A"}]}, {"cat": "Pisos", "num": 47, "name": "Iluminación Interna (Aparatos)", "cod": "D5040", "components": [{"comp": "Controles de Iluminación", "unit": "N"}, {"comp": "Luminarias (accesorios de iluminación)", "unit": "N"}]}, {"cat": "Pisos", "num": 48, "name": "Sistema de Sonido", "cod": "D6030", "components": [{"comp": "Sistema de Sonido (PA) con altavoces incluidos", "unit": "N"}]}, {"cat": "Pisos", "num": 50, "name": "Equipo Residencial - Cocinas", "cod": "E1060", "components": [{"comp": "Estufa de Gas", "unit": "N"}, {"comp": "Estufa Eléctrica", "unit": "N"}, {"comp": "Lavavajillas", "unit": "N"}, {"comp": "Refrigerador", "unit": "N"}]}, {"cat": "Pisos", "num": 51, "name": "Ebanistería/Carpintería", "cod": "C1097", "components": [{"comp": "Gabinete de Almacenamiento (laminado)", "unit": "N"}, {"comp": "Gabinete de Almacenamiento (madera sólida)", "unit": "N"}, {"comp": "Gabinete con fregadero/lavabo/bebedero integrado", "unit": "N"}, {"comp": "Gabinete para Baños, en suelo y montados a la pared", "unit": "N"}, {"comp": "Gabinetes de Cocina comerciales (acrílico)", "unit": "N"}, {"comp": "Gabinetes de Cocina comerciales (madera sólida)", "unit": "N"}, {"comp": "Gabinetes de Cocina domésticos (laminado)", "unit": "N"}, {"comp": "Gabinetes de Cocina domésticos (madera sólida)", "unit": "N"}, {"comp": "Librero", "unit": "N"}]}, {"cat": "Pisos", "num": 52, "name": "Equipo Comercial de Servicios de Alimentación", "cod": "E1038", "components": [{"comp": "Cámara de Congelador/Enfriamiento", "unit": "N"}, {"comp": "Estufa de Gas", "unit": "N"}, {"comp": "Estufa Eléctrica", "unit": "N"}, {"comp": "Estufa/Horno con Campana", "unit": "N"}, {"comp": "Lavavajillas (comercial)", "unit": "N"}, {"comp": "Sistema de Refrigeración Autónomo", "unit": "N"}]}, {"cat": "Pisos", "num": 53, "name": "Equipo de Lavandería Residencial", "cod": "E1060", "components": [{"comp": "Lavadora (doméstica)", "unit": "N"}, {"comp": "Secadora (ropa)", "unit": "N"}]}, {"cat": "Pisos", "num": 54, "name": "Equipo de Lavandería Comercial", "cod": "E1033", "components": [{"comp": "Equipo de Acabado", "unit": "N"}, {"comp": "Lavadora (comercial)", "unit": "N"}, {"comp": "Secadora (ropa)", "unit": "N"}]}, {"cat": "Pisos", "num": 55, "name": "Escaleras y Salidas de Emergencia", "cod": "B1080", "components": [{"comp": "Escalera de Escape de Incendio", "unit": "N"}, {"comp": "Hormigón/Concreto", "unit": "N"}, {"comp": "Madera", "unit": "N"}, {"comp": "Metal", "unit": "N"}, {"comp": "Pintura (interior)", "unit": "A"}, {"comp": "Alfombra", "unit": "A"}]}, {"cat": "Pisos", "num": 57, "name": "Accesorios de Plomería", "cod": "D2010", "components": [{"comp": "Bañera de Hierro Fundido", "unit": "N"}, {"comp": "Bañera y Regadera de Fibra de Vidrio", "unit": "N"}, {"comp": "Bebedero (con refrigeración)", "unit": "N"}, {"comp": "Bebedero (sin refrigeración)", "unit": "N"}, {"comp": "Cabina de Baño (Baldosas)", "unit": "N"}, {"comp": "Calentador de Agua (Tanque de Depósito)", "unit": "N"}, {"comp": "Inodoros, Bidés, Mingitorios y Urinarios", "unit": "N"}, {"comp": "Lavabos (no dentro de mueble)", "unit": "N"}]}, {"cat": "Pisos", "num": 59, "name": "Aislación - Cielorraso", "cod": "C1070", "components": [{"comp": "Cartón Espuma", "unit": "A"}, {"comp": "Celulosa", "unit": "A"}, {"comp": "Fibra de Vidrio (expuesta)", "unit": "A"}, {"comp": "Lana de Roca", "unit": "A"}, {"comp": "Membrana Hidrofuga", "unit": "A"}, {"comp": "Papel Negro (papel fieltro)", "unit": "A"}, {"comp": "Relleno Suelto", "unit": "A"}, {"comp": "Rociador de Espuma Icynene (célula abierta)", "unit": "A"}, {"comp": "Rollos de Fribra de Vidrio (empacado)", "unit": "A"}]}, {"cat": "Pisos", "num": 60, "name": "Sistema de Vídeo", "cod": "D6030", "components": [{"comp": "Sistema Completo", "unit": "N"}]}], "occupancy_categories": ["Educativo", "Atención Médica", "Lugar de Reunión", "Oficina", "Estacionamiento", "Producción", "Residencial", "Talleres", "Bodega", "Estudio"], "units": ["Imperial", "Métrico"]};
+
+// ══ STORAGE ══════════════════════════════════════════
+function getIndex(){try{return JSON.parse(localStorage.getItem("dc97_index")||"[]")}catch(e){return[]}}
+function saveIndex(idx){localStorage.setItem("dc97_index",JSON.stringify(idx))}
+function getEval(id){try{return JSON.parse(localStorage.getItem("dc97_eval_"+id)||"null")}catch(e){return null}}
+function saveEval(id,data){localStorage.setItem("dc97_eval_"+id,JSON.stringify(data))}
+function deleteEval(id){localStorage.removeItem("dc97_eval_"+id);const idx=getIndex().filter(e=>e.id!==id);saveIndex(idx)}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+// ══ STATE ════════════════════════════════════════════
+let currentId=null, state=null;
+
+function freshState(){
+  return {
+    header:{desc:"",fecha:"",anio:new Date().getFullYear(),dir:"",clima:"",unidad:"Métrico",uso:"",oficina:"",cong:1,audit:1,numEdif:1,latitud:"",longitud:""},
+    buildings:[],
+    // components: key="elemNum_compIdx_instance_bldgIdx" → {checked,cantidad,anioReemp,condicion,ajuste,info}
+    // instance = 0 for catalog components, 1+ for duplicates/custom
+    components:{},
+    // extraComps: elemNum → [{type:"dup"|"custom", compIdx(for dup)|compName(for custom), unit, instances:[...keys]}]
+    extraComps:{},
+    // hiddenElems: Set stored as array of "elemNum_bldgIdx"
+    hiddenElems:[],
+    activeBldg:0,
+    activeFilter:"todos",
+    showHidden:false
+  };
+}
+
+function persistCurrent(){
+  if(!currentId||!state)return;
+  saveEval(currentId,state);
+  const idx=getIndex();
+  const entry=idx.find(e=>e.id===currentId);
+  const compCount=Object.values(state.components).filter(c=>c.checked).length;
+  const meta={id:currentId,name:state.header.uso||"Sin nombre",dir:state.header.dir||"",fecha:state.header.fecha||"",whq:getBldgWHQ(),compCount,updatedAt:new Date().toISOString()};
+  if(entry)Object.assign(entry,meta);else idx.push(meta);
+  saveIndex(idx);
+}
+
+function getBldgWHQ(){
+  // Return WHQ of first building that has one
+  for(const b of (state.buildings||[])){if(b.numWHQ)return b.numWHQ;}
+  return "";
+}
+
+// ══ HOME ═════════════════════════════════════════════
+function renderHome(){
+  const idx=getIndex();
+  const list=document.getElementById("eval-list");
+  if(!idx.length){
+    list.innerHTML=`<div class="eval-empty"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><p>No hay evaluaciones guardadas.<br>Crea una nueva o importa un JSON.</p></div>`;
+    return;
+  }
+  const sorted=[...idx].sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||""));
+  list.innerHTML=sorted.map(e=>{
+    const pct=Math.min(100,Math.round((e.compCount||0)/20*100));
+    return `<div class="eval-card" onclick="openEval('${e.id}')">
+      <div class="eval-card-accent"></div>
+      <div class="eval-card-body">
+        <div class="eval-card-title">${e.name||"Sin nombre"}${e.whq?` · <span style="color:var(--txt2);font-weight:400">${e.whq}</span>`:""}</div>
+        <div class="eval-card-sub">${e.dir||"Sin dirección"}</div>
+        <div class="eval-card-meta">
+          ${e.fecha?`<span class="eval-pill blue">${formatDate(e.fecha)}</span>`:""}
+          <span class="eval-pill${e.compCount>0?" green":""}">${e.compCount||0} componentes</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="eval-card-actions" onclick="event.stopPropagation()">
+        <div class="eval-action-btn" onclick="quickExport('${e.id}')">
+          <svg viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        </div>
+        <div class="eval-action-btn del" onclick="confirmDelete('${e.id}','${(e.name||"esta evaluación").replace(/'/g,"\\'")}')">
+          <svg viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M4 7h16M10 3h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"/></svg>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function formatDate(d){if(!d)return"";try{const[y,m,day]=d.split("-");return`${day}/${m}/${y}`}catch(e){return d}}
+function formatRelative(iso){try{const diff=Date.now()-new Date(iso).getTime(),mins=Math.floor(diff/60000);if(mins<2)return"hace un momento";if(mins<60)return`hace ${mins} min`;const hrs=Math.floor(mins/60);if(hrs<24)return`hace ${hrs}h`;return`hace ${Math.floor(hrs/24)}d`}catch(e){return""}}
+
+function newEval(){currentId=genId();state=freshState();persistCurrent();launchMain()}
+function openEval(id){const data=getEval(id);if(!data){toast("No se encontró la evaluación","error");renderHome();return}currentId=id;state={...freshState(),...data};if(!state.extraComps)state.extraComps={};if(!state.hiddenElems)state.hiddenElems=[];launchMain()}
+function quickExport(id){const data=getEval(id);if(!data){toast("No encontrada","error");return}const ed=buildExportDataFrom(id,data);downloadJSON(ed,data);toast("JSON descargado","success")}
+
+// ══ MODAL ═════════════════════════════════════════════
+let _pendingAction=null;
+function confirmDelete(id,name){
+  _pendingAction=()=>{doDelete(id);hideModal()};
+  document.getElementById("modal-title").textContent="Eliminar evaluación";
+  document.getElementById("modal-body").textContent=`¿Eliminar "${name}" permanentemente? Esta acción no se puede deshacer.`;
+  document.getElementById("modal-confirm-btn").textContent="Eliminar";
+  document.getElementById("modal-confirm-btn").onclick=_pendingAction;
+  document.getElementById("modal-overlay").classList.add("show");
+}
+function showDeleteModal(){confirmDelete(currentId,state.header.uso||state.header.dir||"esta evaluación")}
+function hideModal(){document.getElementById("modal-overlay").classList.remove("show")}
+function doDelete(id){deleteEval(id);if(id===currentId)goHome();else renderHome();toast("Evaluación eliminada")}
+
+// ══ NAVIGATION ════════════════════════════════════════
+function launchMain(){
+  document.getElementById("screen-home").style.display="none";
+  const main=document.getElementById("screen-main");
+  main.style.display="flex";
+  populateSelects();renderHeader();ensureBuildings();renderBuildings();renderEvaluation();updateStats();showTab("sitio");
+}
+function goHome(){persistCurrent();document.getElementById("screen-main").style.display="none";document.getElementById("screen-home").style.display="flex";renderHome()}
+function showTab(tab){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById(`tab-${tab}`).classList.add("active");
+  document.querySelector(`.nav-btn[data-tab="${tab}"]`).classList.add("active");
+  if(tab==="exportar")renderExportSummary();
+  if(tab==="evaluacion")renderEvaluation();
+}
+
+// ══ HEADER ════════════════════════════════════════════
+function populateSelects(){
+  const clima=document.getElementById("h-clima");
+  clima.innerHTML='<option value="">— Seleccione —</option>';
+  CATALOG.climates.forEach(c=>{clima.innerHTML+=`<option>${c}</option>`});
+  const uso=document.getElementById("h-uso");
+  uso.innerHTML='<option value="">— Seleccione —</option>';
+  CATALOG.primary_uses.forEach(u=>{uso.innerHTML+=`<option>${u}</option>`});
+  const numEdif=document.getElementById("h-numEdif");
+  numEdif.innerHTML='<option value="">— Seleccione —</option>';
+  for(let i=1;i<=30;i++)numEdif.innerHTML+=`<option value="${i}">${i} edificio${i>1?"s":""}</option>`;
+}
+function renderHeader(){
+  const h=state.header;
+  sv("h-desc",h.desc);sv("h-fecha",h.fecha);sv("h-anio",h.anio);sv("h-dir",h.dir);
+  sv("h-clima",h.clima);sv("h-unidad",h.unidad);sv("h-uso",h.uso);sv("h-oficina",h.oficina);
+  sv("h-cong",h.cong);sv("h-audit",h.audit);sv("h-numEdif",h.numEdif);
+  sv("h-lat",h.latitud);sv("h-lng",h.longitud);
+  updateTopbar();
+}
+function sv(id,val){const el=document.getElementById(id);if(el&&val!=null)el.value=val}
+function gv(id){const el=document.getElementById(id);return el?el.value:""}
+function updateTopbar(){
+  document.getElementById("topbar-badge").textContent=state.header.uso||"Nuevo";
+  document.getElementById("topbar-title").textContent=state.header.dir?state.header.dir.substring(0,32):(state.header.uso||"DC-97 Evaluación");
+}
+function saveHeader(){
+  const h=state.header;
+  h.desc=gv("h-desc");h.fecha=gv("h-fecha");h.anio=gv("h-anio");h.dir=gv("h-dir");
+  h.clima=gv("h-clima");h.unidad=gv("h-unidad");h.uso=gv("h-uso");h.oficina=gv("h-oficina");
+  h.cong=gv("h-cong");h.audit=gv("h-audit");
+  h.latitud=gv("h-lat");h.longitud=gv("h-lng");
+  updateTopbar();persistCurrent();updateStats();
+}
+function saveHeaderBldgs(){
+  state.header.numEdif=parseInt(gv("h-numEdif"))||1;
+  persistCurrent();ensureBuildings();renderBuildings();renderEvaluation();updateStats();
+}
+function obtenerUbicacion(){
+  const btn=document.getElementById("btn-gps");
+  const icon=document.getElementById("gps-icon");
+  const label=document.getElementById("gps-label");
+  if(!navigator.geolocation){toast("Este dispositivo no soporta geolocalización","error");return}
+  icon.textContent="⏳";label.textContent="Obteniendo ubicación…";btn.disabled=true;
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const lat=pos.coords.latitude.toFixed(6);
+      const lng=pos.coords.longitude.toFixed(6);
+      document.getElementById("h-lat").value=lat;
+      document.getElementById("h-lng").value=lng;
+      saveHeader();
+      icon.textContent="✅";label.textContent="Ubicación obtenida";
+      btn.disabled=false;
+      toast("Ubicación registrada","success");
+      setTimeout(()=>{icon.textContent="📍";label.textContent="Actualizar ubicación"},2500);
+    },
+    err=>{
+      btn.disabled=false;icon.textContent="📍";label.textContent="Obtener ubicación actual";
+      let msg="No se pudo obtener la ubicación";
+      if(err.code===1)msg="Permiso de ubicación denegado";
+      else if(err.code===2)msg="Ubicación no disponible";
+      else if(err.code===3)msg="Tiempo de espera agotado";
+      toast(msg,"error");
+    },
+    {enableHighAccuracy:true,timeout:10000,maximumAge:0}
+  );
+}
+
+// ══ BUILDINGS ═════════════════════════════════════════
+function ensureBuildings(){
+  const n=state.header.numEdif||1;
+  while(state.buildings.length<n){
+    const i=state.buildings.length+1;
+    state.buildings.push({id:i,numWHQ:"",nombre:`Edificio ${i}`,pisos:1,catOcup:"",area:"",anioConst:"",anioRemLastRem:"",condMant:"",condEdif:"",anioRemProy:""});
+  }
+}
+function renderBuildings(){
+  const n=state.header.numEdif||0;
+  const c=document.getElementById("edificios-container");
+  if(!n){c.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--txt2)">Selecciona el número de edificios en la pestaña Sitio</div>';return}
+  ensureBuildings();
+  const occupCats=["","Educativo","Atención Médica","Lugar de Reunión","Oficina","Estacionamiento","Producción","Residencial","Talleres","Bodega","Estudio"];
+  const condMantOpts=["","1 - Promedio","2 - Buena","3 - Mala"];
+  const condEdifOpts=["","1 - Se Necesita Remodelación Grande","2 - Se Necesita Remodelación Pequeña","3 - Reemplazar o Desechar","4 - No Se Necesita Construcción"];
+  let html="";
+  for(let i=0;i<Math.min(n,state.buildings.length);i++){
+    const b=state.buildings[i];
+    const floorOpts=[1,2,3,4,5,6,7,8,9,10].map(f=>`<option value="${f}"${b.pisos==f?" selected":""}>${f} piso${f>1?"s":""}</option>`).join("");
+    const occOpts=occupCats.map(o=>`<option${b.catOcup===o?" selected":""}>${o}</option>`).join("");
+    const cmOpts=condMantOpts.map(o=>`<option${b.condMant===o?" selected":""}>${o}</option>`).join("");
+    const ceOpts=condEdifOpts.map(o=>`<option${b.condEdif===o?" selected":""}>${o}</option>`).join("");
+    html+=`<div class="elem-item">
+      <div class="elem-header" onclick="toggleBldgCard(${i})">
+        <div class="elem-num">${i+1}</div>
+        <div class="elem-name">${b.nombre||`Edificio ${i+1}`}</div>
+        <svg class="card-chevron" id="bchev-${i}" style="width:18px;height:18px;stroke:var(--txt2);fill:none;stroke-width:2;flex-shrink:0;transition:transform .2s" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="elem-body" id="bcard-${i}">
+        <div style="padding-top:12px">
+          <div class="field-row">
+            <div class="field"><label>Número WHQ</label><input type="text" value="${b.numWHQ||""}" placeholder="WHQ-0000" oninput="saveBldg(${i},'numWHQ',this.value)"></div>
+            <div class="field"><label>Nombre del edificio</label><input type="text" value="${b.nombre||""}" placeholder="Edificio 1" oninput="saveBldg(${i},'nombre',this.value)"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Número de pisos</label><select onchange="saveBldg(${i},'pisos',parseInt(this.value))">${floorOpts}</select></div>
+            <div class="field"><label>Categoría de ocupación</label><select onchange="saveBldg(${i},'catOcup',this.value)">${occOpts}</select></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Total área de suelo</label><input type="text" value="${b.area||""}" placeholder="m² o sq ft" oninput="saveBldg(${i},'area',this.value)"></div>
+            <div class="field"><label>Año de construcción original</label><input type="number" value="${b.anioConst||""}" placeholder="1990" min="1800" max="2100" oninput="saveBldg(${i},'anioConst',this.value)"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Año última remodelación grande</label><input type="number" value="${b.anioRemLastRem||""}" placeholder="2010" min="1800" max="2100" oninput="saveBldg(${i},'anioRemLastRem',this.value)"></div>
+            <div class="field"><label>Año proyectado de remodelación</label><input type="number" value="${b.anioRemProy||""}" placeholder="2030" min="1800" max="2100" oninput="saveBldg(${i},'anioRemProy',this.value)"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Condición de mantenimiento</label><select onchange="saveBldg(${i},'condMant',this.value)">${cmOpts}</select></div>
+            <div class="field"><label>Condición del edificio</label><select onchange="saveBldg(${i},'condEdif',this.value)">${ceOpts}</select></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+  c.innerHTML=html;
+}
+function toggleBldgCard(idx){
+  const body=document.getElementById(`bcard-${idx}`),chev=document.getElementById(`bchev-${idx}`);
+  const open=body.classList.toggle("open");chev.style.transform=open?"rotate(180deg)":"";
+}
+function saveBldg(idx,field,val){
+  if(!state.buildings[idx])return;
+  state.buildings[idx][field]=val;
+  if(field==="nombre"){const h=document.querySelector(`#edificios-container .elem-item:nth-child(${idx+1}) .elem-name`);if(h)h.textContent=val||`Edificio ${idx+1}`;renderEvalBldgTabs()}
+  persistCurrent();updateStats();
+}
+
+// ══ EVALUATION ════════════════════════════════════════
+
+// Component key: elemNum + "_" + compIdx + "_" + instance + "_" + bldgIdx
+// compIdx = catalog index for catalog comps; 1000+n for custom comps
+// instance = 0 for first, 1+ for duplicates added by user
+function ck(elemNum,compIdx,instance,bldgIdx){return`${elemNum}_${compIdx}_${instance}_${bldgIdx}`}
+
+function filterCat(cat){
+  state.activeFilter=cat;
+  document.querySelectorAll(".filter-chip").forEach(c=>{
+    if(c.dataset.cat==="__hidden")return;
+    c.classList.toggle("active",c.dataset.cat===cat);
+  });
+  renderElemList();
+}
+
+function toggleShowHidden(){
+  state.showHidden=!state.showHidden;
+  document.getElementById("chip-show-hidden").classList.toggle("active",state.showHidden);
+  renderElemList();
+}
+
+function renderEvalBldgTabs(){
+  const n=state.header.numEdif||0;
+  const tabsDiv=document.getElementById("eval-bldg-tabs");
+  const sel=document.getElementById("eval-building-selector");
+  if(n>0){
+    sel.style.display="block";
+    tabsDiv.innerHTML=Array.from({length:Math.min(n,state.buildings.length)},(_,i)=>
+      `<button class="bldg-tab${state.activeBldg===i?" active":""}" onclick="setActiveBldg(${i})">${state.buildings[i]?.nombre||`Edif. ${i+1}`}</button>`
+    ).join("");
+  }else sel.style.display="none";
+}
+
+function renderEvaluation(){renderEvalBldgTabs();renderElemList()}
+function setActiveBldg(idx){state.activeBldg=idx;persistCurrent();renderEvalBldgTabs();renderElemList()}
+
+function isHidden(elemNum,bldgIdx){return(state.hiddenElems||[]).includes(`${elemNum}_${bldgIdx}`)}
+
+function renderElemList(){
+  const filter=state.activeFilter||"todos";
+  const bldgIdx=state.activeBldg||0;
+  const showHidden=state.showHidden||false;
+  const elems=CATALOG.elements.filter(e=>filter==="todos"||e.cat===filter);
+  let html="",lastCat=null;
+
+  elems.forEach(elem=>{
+    const hidden=isHidden(elem.num,bldgIdx);
+    if(hidden&&!showHidden)return; // skip hidden unless show-hidden is on
+
+    if(elem.cat!==lastCat){
+      const cc=elem.cat==="Sitio"?"cat-sitio":elem.cat==="Edificio"?"cat-edificio":"cat-pisos";
+      html+=`<div class="section-title" style="margin-top:${lastCat?'20px':'0'}"><span class="cat-tag ${cc}">${elem.cat[0]}</span>${elem.cat}</div>`;
+      lastCat=elem.cat;
+    }
+
+    // Count checked instances
+    let checkedCount=0;
+    const allKeys=getAllKeysForElem(elem.num,bldgIdx);
+    allKeys.forEach(k=>{if(state.components[k]?.checked)checkedCount++});
+
+    const eid=`elem-${elem.num}-${bldgIdx}`;
+    const addSheetId=`add-sheet-${elem.num}-${bldgIdx}`;
+    html+=`<div class="elem-item${hidden?" hidden-elem":""}" id="ei-${elem.num}-${bldgIdx}">
+      <div class="elem-header" onclick="toggleElem('${eid}')">
+        <div class="elem-num">${elem.num}</div>
+        <div class="elem-name">${elem.name}</div>
+        <div class="elem-status">
+          <span class="comp-count">${checkedCount}/${allKeys.length||elem.components.length}</span>
+          <div class="status-dot${hidden?" hidden-dot":checkedCount>0?" filled":""}"></div>
+          <svg class="card-chevron" id="echev-${eid}" style="width:18px;height:18px;stroke:var(--txt2);fill:none;stroke-width:2;flex-shrink:0;transition:transform .2s" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="elem-body" id="${eid}">
+        <!-- Action bar -->
+        <div class="elem-actions">
+          <button class="elem-action-btn hide-btn${hidden?" active":""}" onclick="toggleHideElem(${elem.num},${bldgIdx})">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            ${hidden?"Mostrar":"Ocultar"} elemento
+          </button>
+          <button class="elem-action-btn" onclick="toggleAddSheet('${addSheetId}')">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Añadir componente
+          </button>
+        </div>
+
+        <!-- Catalog components -->
+        <div class="comp-selector">`;
+
+    // Render catalog components (index 0..n-1)
+    elem.components.forEach((comp,ci)=>{
+      const baseKey=ck(elem.num,ci,0,bldgIdx);
+      const cd=state.components[baseKey]||{};
+      const uLabel=comp.unit==="L"?"Longitud":comp.unit==="A"?"Área":"Cantidad";
+      const chk=cd.checked||false;
+      html+=renderCompInstance(elem.num,ci,0,bldgIdx,comp.comp,comp.unit,uLabel,chk,cd,false,false);
+
+      // Any duplicate instances of this catalog comp
+      const dups=getDupInstances(elem.num,ci,bldgIdx);
+      dups.forEach(inst=>{
+        const k=ck(elem.num,ci,inst,bldgIdx);
+        const d=state.components[k]||{};
+        html+=renderCompInstance(elem.num,ci,inst,bldgIdx,comp.comp,comp.unit,uLabel,d.checked||false,d,true,true);
+      });
+    });
+
+    // Custom components
+    const customs=getCustomComps(elem.num,bldgIdx);
+    customs.forEach(({name,unit,inst})=>{
+      const ci=1000+inst;
+      const k=ck(elem.num,ci,0,bldgIdx);
+      const d=state.components[k]||{};
+      const uLabel=unit==="L"?"Longitud":unit==="A"?"Área":"Cantidad";
+      html+=renderCompInstance(elem.num,ci,0,bldgIdx,name,unit,uLabel,d.checked||false,d,false,true);
+    });
+
+    html+=`</div>
+
+        <!-- Add component sheet -->
+        <div class="add-comp-sheet" id="${addSheetId}">
+          <div class="add-comp-header">
+            <span>Añadir componente a: ${elem.name}</span>
+            <button class="add-comp-close" onclick="toggleAddSheet('${addSheetId}')">×</button>
+          </div>
+          <div class="add-comp-body">
+            <div class="field">
+              <label>Tipo</label>
+              <select id="add-type-${elem.num}-${bldgIdx}" onchange="toggleAddType(${elem.num},${bldgIdx})">
+                <option value="dup">Repetir componente existente</option>
+                <option value="custom">Componente personalizado nuevo</option>
+              </select>
+            </div>
+            <div id="add-dup-${elem.num}-${bldgIdx}">
+              <div class="field">
+                <label>Componente a repetir</label>
+                <select id="add-dup-sel-${elem.num}-${bldgIdx}">
+                  ${elem.components.map((c,ci)=>`<option value="${ci}">${c.comp}</option>`).join("")}
+                </select>
+              </div>
+            </div>
+            <div id="add-custom-${elem.num}-${bldgIdx}" style="display:none">
+              <div class="field">
+                <label>Nombre del componente</label>
+                <input type="text" id="add-custom-name-${elem.num}-${bldgIdx}" placeholder="Descripción del componente">
+              </div>
+              <div class="field">
+                <label>Unidad</label>
+                <select id="add-custom-unit-${elem.num}-${bldgIdx}">
+                  <option value="N">Número / Cantidad</option>
+                  <option value="L">Longitud</option>
+                  <option value="A">Área</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:8px" onclick="addComponent(${elem.num},${bldgIdx},'${addSheetId}')">
+              <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 5v14M5 12h14"/></svg>
+              Añadir
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>`;
+  });
+
+  if(!html) html=`<div style="text-align:center;padding:40px 20px;color:var(--txt2);font-size:13px">No hay elementos en esta categoría.</div>`;
+  document.getElementById("elem-list").innerHTML=html;
+}
+
+function renderCompInstance(elemNum,compIdx,instance,bldgIdx,compName,unit,uLabel,checked,cd,isDup,canDelete){
+  const k=ck(elemNum,compIdx,instance,bldgIdx);
+  const instLabel=isDup?`<span class="comp-instance-label">+${instance}</span>`:"";
+  const delBtn=canDelete?`<button class="comp-del-btn" onclick="removeCompInstance(${elemNum},${compIdx},${instance},${bldgIdx})" title="Eliminar esta instancia"><svg viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M4 7h16M10 3h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"/></svg></button>`:"";
+  const condHtml=CATALOG.conditions.map(c=>`<div class="cond-btn${cd.condicion==c.num?` sel-${c.num}`:""}" onclick="saveComp(${elemNum},${compIdx},${instance},${bldgIdx},'condicion',${c.num})"><span>${c.num}</span><small>${c.desc}</small></div>`).join("");
+  return `<div class="comp-instance" id="ci-${elemNum}-${compIdx}-${instance}-${bldgIdx}">
+    <div class="comp-option">
+      <input type="checkbox" id="chk-${elemNum}-${compIdx}-${instance}-${bldgIdx}" ${checked?"checked":""} onchange="toggleComp(${elemNum},${compIdx},${instance},${bldgIdx},this.checked)">
+      <label class="comp-option-label" for="chk-${elemNum}-${compIdx}-${instance}-${bldgIdx}">${compName}</label>
+      ${instLabel}
+      <span class="comp-unit-badge">${uLabel}</span>
+      ${delBtn}
+    </div>
+    <div class="comp-fields${checked?" open":""}" id="cf-${elemNum}-${compIdx}-${instance}-${bldgIdx}">
+      <div class="field-row">
+        <div class="field"><label>Cantidad (${uLabel})</label>
+          <input type="number" step="0.01" min="0" value="${cd.cantidad||""}" placeholder="0.00" oninput="saveComp(${elemNum},${compIdx},${instance},${bldgIdx},'cantidad',this.value)">
+        </div>
+        <div class="field"><label>Año de reemplazo</label>
+          <input type="number" data-field="anioReemp" min="1900" max="2099" value="${cd.anioReemp||""}" placeholder="${getDefaultYear(bldgIdx)}" oninput="saveComp(${elemNum},${compIdx},${instance},${bldgIdx},'anioReemp',this.value)">
+        </div>
+      </div>
+      <div class="field"><label>Condición</label>
+        <div class="cond-grid">${condHtml}</div>
+      </div>
+      <div class="field"><label>Ajuste de años restantes</label>
+        <input type="number" value="${cd.ajuste||""}" placeholder="0" oninput="saveComp(${elemNum},${compIdx},${instance},${bldgIdx},'ajuste',this.value)">
+      </div>
+      <div class="field"><label>Información adicional</label>
+        <textarea rows="2" placeholder="Notas, observaciones…" oninput="saveComp(${elemNum},${compIdx},${instance},${bldgIdx},'info',this.value)">${cd.info||""}</textarea>
+      </div>
+    </div>
+  </div>`;
+}
+
+function getDefaultYear(bldgIdx){
+  const b=state.buildings[bldgIdx];
+  return b?.anioConst||new Date().getFullYear();
+}
+
+// ── Add/remove component instances ──────────────────
+function toggleAddSheet(id){
+  const el=document.getElementById(id);
+  el.classList.toggle("open");
+  // scroll into view
+  if(el.classList.contains("open"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"nearest"}),50);
+}
+
+function toggleAddType(elemNum,bldgIdx){
+  const type=document.getElementById(`add-type-${elemNum}-${bldgIdx}`).value;
+  document.getElementById(`add-dup-${elemNum}-${bldgIdx}`).style.display=type==="dup"?"block":"none";
+  document.getElementById(`add-custom-${elemNum}-${bldgIdx}`).style.display=type==="custom"?"block":"none";
+}
+
+function addComponent(elemNum,bldgIdx,sheetId){
+  const type=document.getElementById(`add-type-${elemNum}-${bldgIdx}`).value;
+  if(!state.extraComps)state.extraComps={};
+  const eKey=`${elemNum}_${bldgIdx}`;
+  if(!state.extraComps[eKey])state.extraComps[eKey]=[];
+
+  if(type==="dup"){
+    const ci=parseInt(document.getElementById(`add-dup-sel-${elemNum}-${bldgIdx}`).value);
+    // Find next available instance number for this comp
+    const existing=state.extraComps[eKey].filter(x=>x.type==="dup"&&x.compIdx===ci).map(x=>x.instance);
+    const nextInst=(existing.length?Math.max(...existing):0)+1;
+    state.extraComps[eKey].push({type:"dup",compIdx:ci,instance:nextInst});
+    // Pre-fill año reemplazo with building construction year
+    const k=ck(elemNum,ci,nextInst,bldgIdx);
+    if(!state.components[k])state.components[k]={};
+    const defYear=getDefaultYear(bldgIdx);
+    if(!state.components[k].anioReemp&&defYear)state.components[k].anioReemp=String(defYear);
+    toast("Componente duplicado añadido","success");
+  }else{
+    const name=document.getElementById(`add-custom-name-${elemNum}-${bldgIdx}`).value.trim();
+    const unit=document.getElementById(`add-custom-unit-${elemNum}-${bldgIdx}`).value;
+    if(!name){toast("Ingresa el nombre del componente","error");return}
+    const existing=state.extraComps[eKey].filter(x=>x.type==="custom").map(x=>x.instance);
+    const nextInst=(existing.length?Math.max(...existing):0)+1;
+    state.extraComps[eKey].push({type:"custom",name,unit,instance:nextInst});
+    document.getElementById(`add-custom-name-${elemNum}-${bldgIdx}`).value="";
+    const ci=1000+nextInst;
+    const k=ck(elemNum,ci,0,bldgIdx);
+    if(!state.components[k])state.components[k]={};
+    const defYear=getDefaultYear(bldgIdx);
+    if(!state.components[k].anioReemp&&defYear)state.components[k].anioReemp=String(defYear);
+    toast("Componente personalizado añadido","success");
+  }
+  persistCurrent();
+  document.getElementById(sheetId).classList.remove("open");
+  renderElemList();
+}
+
+function removeCompInstance(elemNum,compIdx,instance,bldgIdx){
+  const eKey=`${elemNum}_${bldgIdx}`;
+  if(state.extraComps&&state.extraComps[eKey]){
+    if(compIdx>=1000){
+      const inst=compIdx-1000;
+      state.extraComps[eKey]=state.extraComps[eKey].filter(x=>!(x.type==="custom"&&x.instance===inst));
+      delete state.components[ck(elemNum,compIdx,0,bldgIdx)];
+    }else{
+      state.extraComps[eKey]=state.extraComps[eKey].filter(x=>!(x.type==="dup"&&x.compIdx===compIdx&&x.instance===instance));
+      delete state.components[ck(elemNum,compIdx,instance,bldgIdx)];
+    }
+  }
+  persistCurrent();renderElemList();
+  toast("Componente eliminado");
+}
+
+// ── Helpers for extra components ─────────────────────
+function getDupInstances(elemNum,compIdx,bldgIdx){
+  const eKey=`${elemNum}_${bldgIdx}`;
+  return(state.extraComps&&state.extraComps[eKey]||[]).filter(x=>x.type==="dup"&&x.compIdx===compIdx).map(x=>x.instance);
+}
+function getCustomComps(elemNum,bldgIdx){
+  const eKey=`${elemNum}_${bldgIdx}`;
+  return(state.extraComps&&state.extraComps[eKey]||[]).filter(x=>x.type==="custom");
+}
+function getAllKeysForElem(elemNum,bldgIdx){
+  const elem=CATALOG.elements.find(e=>e.num===elemNum);if(!elem)return[];
+  const keys=[];
+  elem.components.forEach((_,ci)=>{
+    keys.push(ck(elemNum,ci,0,bldgIdx));
+    getDupInstances(elemNum,ci,bldgIdx).forEach(inst=>keys.push(ck(elemNum,ci,inst,bldgIdx)));
+  });
+  getCustomComps(elemNum,bldgIdx).forEach(({instance})=>keys.push(ck(elemNum,1000+instance,0,bldgIdx)));
+  return keys;
+}
+
+// ── Hide/show element ─────────────────────────────────
+function toggleHideElem(elemNum,bldgIdx){
+  if(!state.hiddenElems)state.hiddenElems=[];
+  const key=`${elemNum}_${bldgIdx}`;
+  const idx=state.hiddenElems.indexOf(key);
+  if(idx>=0)state.hiddenElems.splice(idx,1);
+  else state.hiddenElems.push(key);
+  persistCurrent();renderElemList();updateStats();
+}
+
+// ── Component interaction ─────────────────────────────
+function toggleElem(eid){
+  const body=document.getElementById(eid),chev=document.getElementById("echev-"+eid);
+  const open=body.classList.toggle("open");chev.style.transform=open?"rotate(180deg)":"";
+}
+
+function toggleComp(elemNum,compIdx,instance,bldgIdx,checked){
+  const key=ck(elemNum,compIdx,instance,bldgIdx);
+  if(!state.components[key])state.components[key]={};
+  state.components[key].checked=checked;
+  // default year
+  if(checked&&!state.components[key].anioReemp){
+    const dy=getDefaultYear(bldgIdx);
+    if(dy)state.components[key].anioReemp=String(dy);
+    const inp=document.getElementById(`cf-${elemNum}-${compIdx}-${instance}-${bldgIdx}`)?.querySelector('input[data-field="anioReemp"]');
+    if(inp&&!inp.value)inp.value=dy;
+  }
+  const f=document.getElementById(`cf-${elemNum}-${compIdx}-${instance}-${bldgIdx}`);
+  if(f)f.classList.toggle("open",checked);
+  updateElemDot(elemNum,bldgIdx);persistCurrent();updateStats();
+}
+
+function saveComp(elemNum,compIdx,instance,bldgIdx,field,val){
+  const key=ck(elemNum,compIdx,instance,bldgIdx);
+  if(!state.components[key])state.components[key]={checked:true};
+  state.components[key][field]=val;
+  if(field==="condicion"){
+    const grid=document.querySelector(`#cf-${elemNum}-${compIdx}-${instance}-${bldgIdx} .cond-grid`);
+    if(grid)grid.querySelectorAll(".cond-btn").forEach((btn,i)=>{const n=i+1;btn.className="cond-btn"+(n===val?` sel-${n}`:"")});
+  }
+  persistCurrent();
+}
+
+function updateElemDot(elemNum,bldgIdx){
+  const allKeys=getAllKeysForElem(elemNum,bldgIdx);
+  const count=allKeys.filter(k=>state.components[k]?.checked).length;
+  const container=document.getElementById(`ei-${elemNum}-${bldgIdx}`);if(!container)return;
+  const dot=container.querySelector(".status-dot"),cnt=container.querySelector(".comp-count");
+  if(dot){dot.className="status-dot"+(isHidden(elemNum,bldgIdx)?" hidden-dot":count>0?" filled":"")}
+  if(cnt)cnt.textContent=`${count}/${allKeys.length||CATALOG.elements.find(e=>e.num===elemNum)?.components.length||0}`;
+}
+
+// ══ STATS ═════════════════════════════════════════════
+function updateStats(){
+  const total=Object.values(state.components).filter(c=>c.checked).length;
+  const numB=Math.min(state.header.numEdif||0,state.buildings.length);
+  const hidden=(state.hiddenElems||[]).length;
+  document.getElementById("stat-comp").textContent=total;
+  document.getElementById("stat-edif").textContent=numB||0;
+  document.getElementById("stat-hidden").textContent=hidden;
+}
+
+// ══ EXPORT ════════════════════════════════════════════
+function renderExportSummary(){
+  const byCat={Sitio:0,Edificio:0,Pisos:0};
+  const bldgIdx=state.activeBldg||0;
+  Object.entries(state.components).filter(([,v])=>v.checked).forEach(([key])=>{
+    const parts=key.split("_");const elemNum=parseInt(parts[0]);
+    const elem=CATALOG.elements.find(e=>e.num===elemNum);if(elem)byCat[elem.cat]=(byCat[elem.cat]||0)+1;
+  });
+  const total=Object.values(state.components).filter(c=>c.checked).length;
+  document.getElementById("export-summary").innerHTML=`
+    <div class="stats-strip">
+      <div class="stat-box"><div class="val" style="font-size:18px;color:#4ade80">${byCat.Sitio}</div><div class="lbl">Sitio</div></div>
+      <div class="stat-box"><div class="val" style="font-size:18px;color:#60a5fa">${byCat.Edificio}</div><div class="lbl">Edificio</div></div>
+      <div class="stat-box"><div class="val" style="font-size:18px;color:#c084fc">${byCat.Pisos}</div><div class="lbl">Pisos</div></div>
+    </div>
+    <div class="card"><div class="card-body open"><p style="font-size:13px;color:var(--txt1)">
+      <strong style="color:var(--txt0)">${total}</strong> componentes capturados.
+      Edificios: <strong style="color:var(--txt0)">${state.buildings.filter(b=>b.nombre).length}</strong>.
+      Ocultos: <strong style="color:var(--txt0)">${(state.hiddenElems||[]).length}</strong>.
+    </p></div></div>`;
+}
+
+function buildExportDataFrom(id,s){
+  const evals=[];
+  Object.entries(s.components||{}).filter(([,v])=>v.checked).forEach(([key,val])=>{
+    const parts=key.split("_");
+    const[elemNum,compIdx,instance,bldgIdx]=parts.map(Number);
+    const elem=CATALOG.elements.find(e=>e.num===elemNum);
+    let compName,compUnit;
+    if(compIdx>=1000){
+      const inst=compIdx-1000;
+      const eKey=`${elemNum}_${bldgIdx}`;
+      const customDef=(s.extraComps&&s.extraComps[eKey]||[]).find(x=>x.type==="custom"&&x.instance===inst);
+      compName=customDef?.name||"Componente personalizado";
+      compUnit=customDef?.unit||"N";
+    }else{
+      const comp=elem?.components[compIdx];
+      compName=comp?.comp||"";compUnit=comp?.unit||"N";
+    }
+    evals.push({key,categoria:elem?.cat,elemento:elem?.name,elementoNum:elemNum,
+      componente:compName,unidad:compUnit,instancia:instance,
+      edificioIdx:bldgIdx,edificio:(s.buildings||[])[bldgIdx]?.nombre||`Edificio ${bldgIdx+1}`,
+      cantidad:val.cantidad||"",anioUltimoReemplazo:val.anioReemp||"",
+      condicion:val.condicion||"",ajusteAnios:val.ajuste||"",
+      informacionAdicional:val.info||""
+    });
+  });
+  return{version:"DC-97-S",evalId:id,exportDate:new Date().toISOString(),
+    header:s.header,buildings:(s.buildings||[]).slice(0,s.header?.numEdif||1),
+    hiddenElems:s.hiddenElems||[],evaluacion:evals};
+}
+
+function buildFilename(s){
+  // WHQ_YYYYMMDD.json
+  const whq=getBldgWHQ()||"SIN-WHQ";
+  const fecha=(s.header?.fecha||new Date().toISOString().split("T")[0]).replace(/-/g,"");
+  return`DC97_${whq}_${fecha}.json`;
+}
+
+function downloadJSON(data,s){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=buildFilename(s||state);
+  a.click();URL.revokeObjectURL(url);
+}
+
+function exportJSON(){
+  renderExportSummary();
+  const data=buildExportDataFrom(currentId,state);
+  downloadJSON(data,state);
+  toast("JSON descargado","success");
+}
+
+function exportCSVSummary(){
+  const data=buildExportDataFrom(currentId,state);
+  const rows=[["Categoría","Elem No.","Elemento","Componente","Instancia","Unidad","Edificio","Cantidad","Año reemplazo","Condición","Ajuste años","Info adicional"]];
+  data.evaluacion.forEach(r=>rows.push([r.categoria,r.elementoNum,r.elemento,r.componente,r.instancia,r.unidad,r.edificio,r.cantidad,r.anioUltimoReemplazo,r.condicion,r.ajusteAnios,`"${(r.informacionAdicional||"").replace(/"/g,'\\"')}"`]));
+  const csv=rows.map(r=>r.join(",")).join("\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const whq=getBldgWHQ()||"SIN-WHQ";
+  const fecha=(state.header?.fecha||new Date().toISOString().split("T")[0]).replace(/-/g,"");
+  a.href=url;a.download=`DC97_${whq}_${fecha}.csv`;
+  a.click();URL.revokeObjectURL(url);
+  toast("CSV descargado","success");
+}
+
+function duplicateEval(){
+  const newId=genId();
+  const copy=JSON.parse(JSON.stringify(state));
+  copy.header.desc=(copy.header.desc||"")+" (copia)";
+  saveEval(newId,copy);
+  const idx=getIndex();
+  idx.push({id:newId,name:(copy.header.uso||"Sin nombre")+" (copia)",dir:copy.header.dir||"",
+    fecha:copy.header.fecha||"",whq:getBldgWHQ(),
+    compCount:Object.values(copy.components||{}).filter(c=>c.checked).length,updatedAt:new Date().toISOString()});
+  saveIndex(idx);
+  toast("Evaluación duplicada","success");
+}
+
+function handleImport(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const imported=JSON.parse(e.target.result);
+      const newId=imported.evalId||genId();
+      const s=freshState();
+      if(imported.header)s.header=imported.header;
+      if(imported.buildings)s.buildings=imported.buildings;
+      if(imported.hiddenElems)s.hiddenElems=imported.hiddenElems;
+      if(imported.evaluacion){
+        s.components={};
+        imported.evaluacion.forEach(r=>{
+          s.components[r.key]={checked:true,cantidad:r.cantidad,anioReemp:r.anioUltimoReemplazo,condicion:r.condicion,ajuste:r.ajusteAnios,info:r.informacionAdicional};
+        });
+      }
+      saveEval(newId,s);
+      const idx=getIndex();
+      const existing=idx.find(e=>e.id===newId);
+      const meta={id:newId,name:s.header.uso||"Importado",dir:s.header.dir||"",fecha:s.header.fecha||"",
+        whq:(s.buildings||[]).find(b=>b.numWHQ)?.numWHQ||"",
+        compCount:Object.values(s.components).filter(c=>c.checked).length,updatedAt:new Date().toISOString()};
+      if(existing)Object.assign(existing,meta);else idx.push(meta);
+      saveIndex(idx);renderHome();toast("Evaluación importada","success");
+    }catch(err){toast("Error: archivo inválido","error")}
+    event.target.value="";
+  };
+  reader.readAsText(file);
+}
+
+// ══ TOAST ═════════════════════════════════════════════
+let _tt;
+function toast(msg,type=""){
+  const el=document.getElementById("toast");
+  el.textContent=msg;el.className="show"+(type?" "+type:"");
+  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove("show"),2800);
+}
+
+// ══ BOOT ══════════════════════════════════════════════
+window.addEventListener("DOMContentLoaded",()=>{
+  renderHome();
+  if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+});
+</script>
+</body>
+</html>
