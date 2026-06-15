@@ -334,6 +334,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
         <div class="stat-box"><div class="val" id="stat-comp">0</div><div class="lbl">Componentes</div></div>
         <div class="stat-box"><div class="val" id="stat-edif">0</div><div class="lbl">Edificios</div></div>
         <div class="stat-box"><div class="val" id="stat-hidden">0</div><div class="lbl">Ocultados</div></div>
+        <div class="stat-box"><div class="val" id="stat-criticos" style="color:#ef4444">0</div><div class="lbl">Críticos</div></div>
       </div>
     </div>
 
@@ -355,6 +356,10 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
         <button class="filter-chip" id="chip-show-hidden" data-cat="__hidden" onclick="toggleShowHidden()">
           <svg style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
           Ocultos
+        </button>
+        <button class="filter-chip" id="chip-show-criticos" data-cat="__criticos" onclick="toggleShowCriticos()">
+          <svg style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Críticos
         </button>
       </div>
       <div id="eval-building-selector" style="display:none;margin-bottom:12px">
@@ -439,7 +444,8 @@ function freshState(){
     hiddenElems:[],
     activeBldg:0,
     activeFilter:"todos",
-    showHidden:false
+    showHidden:false,
+    showCriticos:false
   };
 }
 
@@ -678,7 +684,7 @@ function ck(elemNum,compIdx,instance,bldgIdx){return`${elemNum}_${compIdx}_${ins
 function filterCat(cat){
   state.activeFilter=cat;
   document.querySelectorAll(".filter-chip").forEach(c=>{
-    if(c.dataset.cat==="__hidden")return;
+    if(c.dataset.cat==="__hidden"||c.dataset.cat==="__criticos")return;
     c.classList.toggle("active",c.dataset.cat===cat);
   });
   renderElemList();
@@ -688,6 +694,50 @@ function toggleShowHidden(){
   state.showHidden=!state.showHidden;
   document.getElementById("chip-show-hidden").classList.toggle("active",state.showHidden);
   renderElemList();
+}
+
+function toggleShowCriticos(){
+  state.showCriticos=!state.showCriticos;
+  const chip=document.getElementById("chip-show-criticos");
+  chip.classList.toggle("active",state.showCriticos);
+  // En modo críticos, atenuar visualmente los chips de categoría (quedan inactivos)
+  document.querySelectorAll(".filter-chip").forEach(c=>{
+    if(c.dataset.cat==="__hidden"||c.dataset.cat==="__criticos")return;
+    c.style.opacity=state.showCriticos?"0.4":"1";
+    c.style.pointerEvents=state.showCriticos?"none":"auto";
+  });
+  renderElemList();
+}
+
+// Un elemento es crítico si tiene al menos un componente marcado con condición 3 o 4
+function elemTieneCriticos(elemNum,bldgIdx){
+  const keys=getAllKeysForElem(elemNum,bldgIdx);
+  return keys.some(k=>{
+    const comp=state.components[k];
+    if(!comp||!comp.checked)return false;
+    const cond=parseInt(comp.condicion);
+    return cond===3||cond===4;
+  });
+}
+
+// Un componente individual (por su clave) es crítico
+function compEsCritico(key){
+  const comp=state.components[key];
+  if(!comp||!comp.checked)return false;
+  const cond=parseInt(comp.condicion);
+  return cond===3||cond===4;
+}
+
+// Cuenta total de componentes críticos (cond 3 o 4) en todos los edificios
+function contarCriticos(){
+  let n=0;
+  Object.values(state.components||{}).forEach(comp=>{
+    if(comp&&comp.checked){
+      const cond=parseInt(comp.condicion);
+      if(cond===3||cond===4)n++;
+    }
+  });
+  return n;
 }
 
 function renderEvalBldgTabs(){
@@ -711,12 +761,24 @@ function renderElemList(){
   const filter=state.activeFilter||"todos";
   const bldgIdx=state.activeBldg||0;
   const showHidden=state.showHidden||false;
-  const elems=CATALOG.elements.filter(e=>filter==="todos"||e.cat===filter);
+  const showCriticos=state.showCriticos||false;
+  // En modo críticos se ignora el filtro de categoría (muestra todas)
+  const elems=CATALOG.elements.filter(e=>showCriticos||filter==="todos"||e.cat===filter);
   let html="",lastCat=null;
+
+  // Banner informativo en modo críticos
+  if(showCriticos){
+    html+=`<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <svg style="width:16px;height:16px;stroke:#ef4444;fill:none;stroke-width:2;flex-shrink:0" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span style="font-size:12px;color:#fca5a5">Mostrando solo componentes en condición Defectuosa (3) o Seriamente Defectuosa (4).</span>
+    </div>`;
+  }
 
   elems.forEach(elem=>{
     const hidden=isHidden(elem.num,bldgIdx);
     if(hidden&&!showHidden)return; // skip hidden unless show-hidden is on
+    // En modo críticos, solo mostrar elementos con componentes en condición 3 o 4
+    if(showCriticos&&!elemTieneCriticos(elem.num,bldgIdx))return;
 
     if(elem.cat!==lastCat){
       const cc=elem.cat==="Sitio"?"cat-sitio":elem.cat==="Edificio"?"cat-edificio":"cat-pisos";
@@ -741,8 +803,8 @@ function renderElemList(){
           <svg class="card-chevron" id="echev-${eid}" style="width:18px;height:18px;stroke:var(--txt2);fill:none;stroke-width:2;flex-shrink:0;transition:transform .2s" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
       </div>
-      <div class="elem-body" id="${eid}">
-        <!-- Action bar -->
+      <div class="elem-body${showCriticos?" open":""}" id="${eid}">
+        ${showCriticos?"":`<!-- Action bar -->
         <div class="elem-actions">
           <button class="elem-action-btn hide-btn${hidden?" active":""}" onclick="toggleHideElem(${elem.num},${bldgIdx})">
             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -752,7 +814,7 @@ function renderElemList(){
             <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
             Añadir componente
           </button>
-        </div>
+        </div>`}
 
         <!-- Catalog components -->
         <div class="comp-selector">`;
@@ -763,14 +825,19 @@ function renderElemList(){
       const cd=state.components[baseKey]||{};
       const uLabel=comp.unit==="L"?"Longitud":comp.unit==="A"?"Área":"Cantidad";
       const chk=cd.checked||false;
-      html+=renderCompInstance(elem.num,ci,0,bldgIdx,comp.comp,comp.unit,uLabel,chk,cd,false,false);
+      // En modo críticos, solo mostrar si este componente es crítico
+      if(!showCriticos||compEsCritico(baseKey)){
+        html+=renderCompInstance(elem.num,ci,0,bldgIdx,comp.comp,comp.unit,uLabel,chk,cd,false,false);
+      }
 
       // Any duplicate instances of this catalog comp
       const dups=getDupInstances(elem.num,ci,bldgIdx);
       dups.forEach(inst=>{
         const k=ck(elem.num,ci,inst,bldgIdx);
         const d=state.components[k]||{};
-        html+=renderCompInstance(elem.num,ci,inst,bldgIdx,comp.comp,comp.unit,uLabel,d.checked||false,d,true,true);
+        if(!showCriticos||compEsCritico(k)){
+          html+=renderCompInstance(elem.num,ci,inst,bldgIdx,comp.comp,comp.unit,uLabel,d.checked||false,d,true,true);
+        }
       });
     });
 
@@ -781,7 +848,9 @@ function renderElemList(){
       const k=ck(elem.num,ci,0,bldgIdx);
       const d=state.components[k]||{};
       const uLabel=unit==="L"?"Longitud":unit==="A"?"Área":"Cantidad";
-      html+=renderCompInstance(elem.num,ci,0,bldgIdx,name,unit,uLabel,d.checked||false,d,false,true);
+      if(!showCriticos||compEsCritico(k)){
+        html+=renderCompInstance(elem.num,ci,0,bldgIdx,name,unit,uLabel,d.checked||false,d,false,true);
+      }
     });
 
     html+=`</div>
@@ -1025,6 +1094,8 @@ function updateStats(){
   document.getElementById("stat-comp").textContent=total;
   document.getElementById("stat-edif").textContent=numB||0;
   document.getElementById("stat-hidden").textContent=hidden;
+  const critEl=document.getElementById("stat-criticos");
+  if(critEl)critEl.textContent=contarCriticos();
 }
 
 // ══ EXPORT ════════════════════════════════════════════
@@ -1142,8 +1213,30 @@ function handleImport(event){
       if(imported.hiddenElems)s.hiddenElems=imported.hiddenElems;
       if(imported.evaluacion){
         s.components={};
+        s.extraComps={};
         imported.evaluacion.forEach(r=>{
           s.components[r.key]={checked:true,cantidad:r.cantidad,anioReemp:r.anioUltimoReemplazo,condicion:r.condicion,ajuste:r.ajusteAnios,info:r.informacionAdicional};
+          // Reconstruir extraComps a partir de la clave
+          const parts=String(r.key).split("_");
+          const elemNum=parseInt(parts[0]);
+          const compIdx=parseInt(parts[1]);
+          const instance=parseInt(parts[2]);
+          const bldgIdx=parseInt(parts[3]);
+          const eKey=`${elemNum}_${bldgIdx}`;
+          if(compIdx>=1000){
+            // componente personalizado: instance del extraComps = compIdx-1000
+            if(!s.extraComps[eKey])s.extraComps[eKey]=[];
+            const inst=compIdx-1000;
+            if(!s.extraComps[eKey].some(x=>x.type==="custom"&&x.instance===inst)){
+              s.extraComps[eKey].push({type:"custom",name:r.componente||"Componente personalizado",unit:r.unidad||"N",instance:inst});
+            }
+          }else if(instance>0){
+            // duplicado de un componente del catálogo
+            if(!s.extraComps[eKey])s.extraComps[eKey]=[];
+            if(!s.extraComps[eKey].some(x=>x.type==="dup"&&x.compIdx===compIdx&&x.instance===instance)){
+              s.extraComps[eKey].push({type:"dup",compIdx:compIdx,instance:instance});
+            }
+          }
         });
       }
       saveEval(newId,s);
