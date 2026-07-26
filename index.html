@@ -367,6 +367,14 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
           <div class="bldg-tabs" id="eval-bldg-tabs"></div>
         </div>
       </div>
+      <div id="eval-sitio-nota" style="display:none;font-size:12px;color:var(--txt2);margin-top:-6px;margin-bottom:8px;padding:6px 10px;background:var(--bg2);border-radius:6px;border:1px solid var(--border)">
+        ℹ️ Los elementos de <strong>Sitio</strong> son compartidos — aplican a toda la propiedad independientemente del edificio activo.
+      </div>
+      <div id="eval-piso-selector" style="display:none;margin-bottom:12px">
+        <div class="field" style="margin-bottom:0"><label>Piso activo</label>
+          <div class="bldg-tabs" id="eval-piso-tabs"></div>
+        </div>
+      </div>
       <div id="elem-list"></div>
     </div>
 
@@ -443,6 +451,7 @@ function freshState(){
     // hiddenElems: Set stored as array of "elemNum_bldgIdx"
     hiddenElems:[],
     activeBldg:0,
+    activePiso:0,
     activeFilter:"todos",
     showHidden:false,
     showCriticos:false
@@ -687,12 +696,23 @@ function filterCat(cat){
     if(c.dataset.cat==="__hidden"||c.dataset.cat==="__criticos")return;
     c.classList.toggle("active",c.dataset.cat===cat);
   });
+  renderEvalBldgTabs();
   renderElemList();
+}
+
+function actualizarEstadoChipsCategoria(){
+  const bloquear=state.showCriticos||state.showHidden;
+  document.querySelectorAll(".filter-chip").forEach(c=>{
+    if(c.dataset.cat==="__hidden"||c.dataset.cat==="__criticos")return;
+    c.style.opacity=bloquear?"0.4":"1";
+    c.style.pointerEvents=bloquear?"none":"auto";
+  });
 }
 
 function toggleShowHidden(){
   state.showHidden=!state.showHidden;
   document.getElementById("chip-show-hidden").classList.toggle("active",state.showHidden);
+  actualizarEstadoChipsCategoria();
   renderElemList();
 }
 
@@ -700,16 +720,44 @@ function toggleShowCriticos(){
   state.showCriticos=!state.showCriticos;
   const chip=document.getElementById("chip-show-criticos");
   chip.classList.toggle("active",state.showCriticos);
-  // En modo críticos, atenuar visualmente los chips de categoría (quedan inactivos)
-  document.querySelectorAll(".filter-chip").forEach(c=>{
-    if(c.dataset.cat==="__hidden"||c.dataset.cat==="__criticos")return;
-    c.style.opacity=state.showCriticos?"0.4":"1";
-    c.style.pointerEvents=state.showCriticos?"none":"auto";
-  });
+  actualizarEstadoChipsCategoria();
   renderElemList();
 }
 
-// Un elemento es crítico si tiene al menos un componente marcado con condición 3 o 4
+function compEsCritico(key){
+  const comp=state.components[key];
+  if(!comp||!comp.checked)return false;
+  const cond=parseInt(comp.condicion);
+  return cond===3||cond===4;
+}
+
+function getBldgIdxForElem(elemNum){
+  const elem=CATALOG.elements.find(e=>e.num===elemNum);
+  if(!elem)return state.activeBldg||0;
+  const activeBldgIdx=state.activeBldg||0;
+  const activePisoIdx=state.activePiso||0;
+  if(elem.cat==="Sitio")return 0;
+  if(elem.cat==="Pisos")return activeBldgIdx*10+activePisoIdx;
+  return activeBldgIdx;
+}
+
+// bldgIdx relevantes para un elemento según su categoría.
+// Si expandirPisos=true (modo críticos/ocultos), regresa TODOS los pisos
+// del edificio activo en vez de solo el piso activo — así críticos/ocultos
+// no dependen del piso seleccionado en la UI.
+function getBldgIdxsForElem(elem,expandirPisos){
+  const activeBldgIdx=state.activeBldg||0;
+  const activePisoIdx=state.activePiso||0;
+  if(elem.cat==="Sitio")return[0];
+  if(elem.cat==="Edificio")return[activeBldgIdx];
+  if(expandirPisos){
+    const bldgActivo=state.buildings[activeBldgIdx];
+    const numPisos=parseInt(bldgActivo?.pisos||1);
+    return Array.from({length:numPisos},(_,p)=>activeBldgIdx*10+p);
+  }
+  return[activeBldgIdx*10+activePisoIdx];
+}
+
 function elemTieneCriticos(elemNum,bldgIdx){
   const keys=getAllKeysForElem(elemNum,bldgIdx);
   return keys.some(k=>{
@@ -720,15 +768,6 @@ function elemTieneCriticos(elemNum,bldgIdx){
   });
 }
 
-// Un componente individual (por su clave) es crítico
-function compEsCritico(key){
-  const comp=state.components[key];
-  if(!comp||!comp.checked)return false;
-  const cond=parseInt(comp.condicion);
-  return cond===3||cond===4;
-}
-
-// Cuenta total de componentes críticos (cond 3 o 4) en todos los edificios
 function contarCriticos(){
   let n=0;
   Object.values(state.components||{}).forEach(comp=>{
@@ -744,40 +783,69 @@ function renderEvalBldgTabs(){
   const n=state.header.numEdif||0;
   const tabsDiv=document.getElementById("eval-bldg-tabs");
   const sel=document.getElementById("eval-building-selector");
-  if(n>0){
+  const pisoSel=document.getElementById("eval-piso-selector");
+  const notaSitio=document.getElementById("eval-sitio-nota");
+  const filtro=state.activeFilter||"todos";
+  const mostrarPisos=filtro==="Pisos"||filtro==="todos";
+
+  if(n>1){
     sel.style.display="block";
     tabsDiv.innerHTML=Array.from({length:Math.min(n,state.buildings.length)},(_,i)=>
       `<button class="bldg-tab${state.activeBldg===i?" active":""}" onclick="setActiveBldg(${i})">${state.buildings[i]?.nombre||`Edif. ${i+1}`}</button>`
     ).join("");
-  }else sel.style.display="none";
+  }else{
+    sel.style.display="none";
+  }
+
+  const bldgActivo=state.buildings[state.activeBldg||0];
+  const numPisos=parseInt(bldgActivo?.pisos||1);
+  if(pisoSel){
+    if(mostrarPisos&&numPisos>1){
+      pisoSel.style.display="block";
+      document.getElementById("eval-piso-tabs").innerHTML=
+        Array.from({length:numPisos},(_,i)=>
+          `<button class="bldg-tab${(state.activePiso||0)===i?" active":""}" onclick="setActivePiso(${i})">Piso ${i+1}</button>`
+        ).join("");
+    }else{
+      pisoSel.style.display="none";
+    }
+  }
+
+  if(notaSitio){
+    notaSitio.style.display=(n>1&&(filtro==="Sitio"||filtro==="todos"))?"block":"none";
+  }
 }
 
-function renderEvaluation(){renderEvalBldgTabs();renderElemList()}
-function setActiveBldg(idx){state.activeBldg=idx;persistCurrent();renderEvalBldgTabs();renderElemList()}
+function setActivePiso(idx){state.activePiso=idx;persistCurrent();renderEvalBldgTabs();renderElemList()}
+function setActiveBldg(idx){state.activeBldg=idx;state.activePiso=0;persistCurrent();renderEvalBldgTabs();renderElemList()}
 
 function isHidden(elemNum,bldgIdx){return(state.hiddenElems||[]).includes(`${elemNum}_${bldgIdx}`)}
 
 function renderElemList(){
   const filter=state.activeFilter||"todos";
-  const bldgIdx=state.activeBldg||0;
+  const activeBldgIdx=state.activeBldg||0;
+  const activePisoIdx=state.activePiso||0;
   const showHidden=state.showHidden||false;
   const showCriticos=state.showCriticos||false;
-  // En modo críticos se ignora el filtro de categoría (muestra todas)
-  const elems=CATALOG.elements.filter(e=>showCriticos||filter==="todos"||e.cat===filter);
+  const elems=CATALOG.elements.filter(e=>showCriticos||showHidden||filter==="todos"||e.cat===filter);
   let html="",lastCat=null;
 
-  // Banner informativo en modo críticos
   if(showCriticos){
-    html+=`<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
-      <svg style="width:16px;height:16px;stroke:#ef4444;fill:none;stroke-width:2;flex-shrink:0" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span style="font-size:12px;color:#fca5a5">Mostrando solo componentes en condición Defectuosa (3) o Seriamente Defectuosa (4).</span>
-    </div>`;
+    html+='<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:10px 12px;margin-bottom:12px">';
+    html+='<span style="font-size:12px;color:#fca5a5">⚠️ Solo componentes en condición Defectuosa (3) o Seriamente Defectuosa (4).</span></div>';
   }
 
+  // En modo críticos u ocultos, los elementos de Pisos se expanden a
+  // TODOS los pisos del edificio, sin importar el piso activo en la UI.
+  const expandirPisos=showCriticos||showHidden;
+
   elems.forEach(elem=>{
+    const expandirEsteElem=expandirPisos&&elem.cat==="Pisos";
+    const bldgIdxs=getBldgIdxsForElem(elem,expandirEsteElem);
+
+    bldgIdxs.forEach(bldgIdx=>{
     const hidden=isHidden(elem.num,bldgIdx);
-    if(hidden&&!showHidden)return; // skip hidden unless show-hidden is on
-    // En modo críticos, solo mostrar elementos con componentes en condición 3 o 4
+    if(hidden&&!showHidden)return;
     if(showCriticos&&!elemTieneCriticos(elem.num,bldgIdx))return;
 
     if(elem.cat!==lastCat){
@@ -791,20 +859,21 @@ function renderElemList(){
     const allKeys=getAllKeysForElem(elem.num,bldgIdx);
     allKeys.forEach(k=>{if(state.components[k]?.checked)checkedCount++});
 
+    const pisoLabel=expandirEsteElem?` · <span style="color:#c084fc;font-weight:700;font-size:12px">Piso ${(bldgIdx%10)+1}</span>`:"";
     const eid=`elem-${elem.num}-${bldgIdx}`;
     const addSheetId=`add-sheet-${elem.num}-${bldgIdx}`;
     html+=`<div class="elem-item${hidden?" hidden-elem":""}" id="ei-${elem.num}-${bldgIdx}">
       <div class="elem-header" onclick="toggleElem('${eid}')">
         <div class="elem-num">${elem.num}</div>
-        <div class="elem-name">${elem.name}</div>
+        <div class="elem-name">${elem.name}${pisoLabel}</div>
         <div class="elem-status">
           <span class="comp-count">${checkedCount}/${allKeys.length||elem.components.length}</span>
           <div class="status-dot${hidden?" hidden-dot":checkedCount>0?" filled":""}"></div>
           <svg class="card-chevron" id="echev-${eid}" style="width:18px;height:18px;stroke:var(--txt2);fill:none;stroke-width:2;flex-shrink:0;transition:transform .2s" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
       </div>
-      <div class="elem-body${showCriticos?" open":""}" id="${eid}">
-        ${showCriticos?"":`<!-- Action bar -->
+      <div class="elem-body" id="${eid}">
+        <!-- Action bar -->
         <div class="elem-actions">
           <button class="elem-action-btn hide-btn${hidden?" active":""}" onclick="toggleHideElem(${elem.num},${bldgIdx})">
             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -814,7 +883,7 @@ function renderElemList(){
             <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
             Añadir componente
           </button>
-        </div>`}
+        </div>
 
         <!-- Catalog components -->
         <div class="comp-selector">`;
@@ -825,7 +894,6 @@ function renderElemList(){
       const cd=state.components[baseKey]||{};
       const uLabel=comp.unit==="L"?"Longitud":comp.unit==="A"?"Área":"Cantidad";
       const chk=cd.checked||false;
-      // En modo críticos, solo mostrar si este componente es crítico
       if(!showCriticos||compEsCritico(baseKey)){
         html+=renderCompInstance(elem.num,ci,0,bldgIdx,comp.comp,comp.unit,uLabel,chk,cd,false,false);
       }
@@ -900,6 +968,7 @@ function renderElemList(){
 
       </div>
     </div>`;
+    }); // fin bldgIdxs.forEach
   });
 
   if(!html) html=`<div style="text-align:center;padding:40px 20px;color:var(--txt2);font-size:13px">No hay elementos en esta categoría.</div>`;
@@ -1154,15 +1223,41 @@ function buildFilename(s){
   // WHQ_YYYYMMDD.json
   const whq=getBldgWHQ()||"SIN-WHQ";
   const fecha=(s.header?.fecha||new Date().toISOString().split("T")[0]).replace(/-/g,"");
-  return`DC97_${whq}_${fecha}.json`;
+  return nombreDisponible(`DC97_${whq}_${fecha}.json`);
+}
+
+// El navegador no permite verificar si ya existe un archivo en Descargas,
+// así que llevamos registro de los nombres ya exportados en localStorage
+// para evitar que el navegador los sobrescriba/renombre de forma inconsistente:
+// en vez de eso, se agrega sufijo _1, _2, ... antes de la extensión.
+function nombreDisponible(nombre){
+  let usados;
+  try{usados=JSON.parse(localStorage.getItem("dc97_export_names")||"[]")}catch(e){usados=[]}
+  if(!usados.includes(nombre))return nombre;
+  const punto=nombre.lastIndexOf(".");
+  const base=punto>=0?nombre.slice(0,punto):nombre;
+  const ext=punto>=0?nombre.slice(punto):"";
+  let n=1,candidato;
+  do{candidato=`${base}_${n}${ext}`;n++}while(usados.includes(candidato));
+  return candidato;
+}
+
+function registrarNombreExportado(nombre){
+  let usados;
+  try{usados=JSON.parse(localStorage.getItem("dc97_export_names")||"[]")}catch(e){usados=[]}
+  usados.push(nombre);
+  if(usados.length>200)usados=usados.slice(-200);
+  localStorage.setItem("dc97_export_names",JSON.stringify(usados));
 }
 
 function downloadJSON(data,s){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
-  a.href=url;a.download=buildFilename(s||state);
+  const nombre=buildFilename(s||state);
+  a.href=url;a.download=nombre;
   a.click();URL.revokeObjectURL(url);
+  registrarNombreExportado(nombre);
 }
 
 function exportJSON(){
@@ -1216,7 +1311,6 @@ function handleImport(event){
         s.extraComps={};
         imported.evaluacion.forEach(r=>{
           s.components[r.key]={checked:true,cantidad:r.cantidad,anioReemp:r.anioUltimoReemplazo,condicion:r.condicion,ajuste:r.ajusteAnios,info:r.informacionAdicional};
-          // Reconstruir extraComps a partir de la clave
           const parts=String(r.key).split("_");
           const elemNum=parseInt(parts[0]);
           const compIdx=parseInt(parts[1]);
@@ -1224,14 +1318,12 @@ function handleImport(event){
           const bldgIdx=parseInt(parts[3]);
           const eKey=`${elemNum}_${bldgIdx}`;
           if(compIdx>=1000){
-            // componente personalizado: instance del extraComps = compIdx-1000
             if(!s.extraComps[eKey])s.extraComps[eKey]=[];
             const inst=compIdx-1000;
             if(!s.extraComps[eKey].some(x=>x.type==="custom"&&x.instance===inst)){
               s.extraComps[eKey].push({type:"custom",name:r.componente||"Componente personalizado",unit:r.unidad||"N",instance:inst});
             }
           }else if(instance>0){
-            // duplicado de un componente del catálogo
             if(!s.extraComps[eKey])s.extraComps[eKey]=[];
             if(!s.extraComps[eKey].some(x=>x.type==="dup"&&x.compIdx===compIdx&&x.instance===instance)){
               s.extraComps[eKey].push({type:"dup",compIdx:compIdx,instance:instance});
