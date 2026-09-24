@@ -6,6 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0f1923">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
 <title>DC-97 Evaluación</title>
 <link rel="manifest" href="manifest.json">
 <style>
@@ -845,7 +847,9 @@ function renderElemList(){
 
     bldgIdxs.forEach(bldgIdx=>{
     const hidden=isHidden(elem.num,bldgIdx);
-    if(hidden&&!showHidden)return;
+    // Modo Ocultos activo: mostrar SOLO los ocultos.
+    // Modo normal: ocultar los ocultos (comportamiento de siempre).
+    if(showHidden){if(!hidden)return}else{if(hidden)return}
     if(showCriticos&&!elemTieneCriticos(elem.num,bldgIdx))return;
 
     if(elem.cat!==lastCat){
